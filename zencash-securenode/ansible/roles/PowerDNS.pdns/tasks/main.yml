@@ -1,0 +1,59 @@
+---
+
+- name: Include OS-specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - always
+
+- include: "repo-{{ ansible_os_family }}.yml"
+  when: pdns_install_repo != ""
+  tags:
+    - install
+    - repository
+
+- include: install-epel.yml
+  when: ansible_os_family == 'RedHat' and pdns_install_epel
+  tags:
+    - install
+
+- include: install-pdns.yml
+  tags:
+    - install
+
+- include: inspect.yml
+  tags:
+    - db
+    - mysql
+    - sqlite
+    - config
+
+- include: database-mysql.yml
+  when: "pdns_mysql_databases_credentials | length > 0"
+  tags:
+    - db
+    - mysql
+
+- include: database-sqlite3.yml
+  when: "pdns_sqlite_databases_locations | length > 0"
+  tags:
+    - db
+    - sqlite
+
+- include: configure.yml
+  tags:
+    - config
+
+- name: Start and enable the PowerDNS service
+  service:
+    name: "{{ pdns_service_name }}"
+    state: started
+    enabled: true
+  tags:
+    - service
+
+- name: Force handlers flush
+  meta: flush_handlers
+  when: pdns_flush_handlers
+  tags:
+    - config
+    - service

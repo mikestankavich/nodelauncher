@@ -1,0 +1,16 @@
+---
+- name: Upgrade zen daemon service
+  hosts: zen
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: Install node modules for nodedaemon
+      apt:
+        name: zen
+        update_cache: yes
+        state: latest
+
+    - name: Restart zend service
+      systemd:
+        name: zend
+        state: restarted

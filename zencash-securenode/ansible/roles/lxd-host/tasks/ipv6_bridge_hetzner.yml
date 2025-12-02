@@ -1,0 +1,35 @@
+---
+- name: Build netplan lines block
+  set_fact:
+    netplan_lines:
+      - "      dhcp4: no"
+      - "      dhcp6: no"
+      - "  bridges:"
+      - "    vmbr0:"
+      - "      macaddress: {{ mac_address }}"
+      - "      interfaces:"
+      - "        - {{ nic_device }}"
+
+- name: Insert bridge lines into netplan
+  blockinfile:
+    path: /etc/netplan/01-netcfg.yaml
+    insertafter: "    {{ nic_device }}:"
+    block: "{{ netplan_lines | join('\n') }}"
+  register: insert_bridge_block
+
+- name: Apply netplan changes
+  command: netplan apply
+  when: insert_bridge_block.changed
+
+- name: Template ndppd settings into /etc/ndppd.conf
+  template:
+    src: ndppd.conf.j2
+    dest: /etc/ndppd.conf
+  vars:
+    bridge_interface: vmbr0
+
+- name: Enable and start ndppd service
+  service:
+    name: ndppd
+    enabled: yes
+    state: started

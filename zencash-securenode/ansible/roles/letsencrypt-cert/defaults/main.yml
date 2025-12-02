@@ -1,0 +1,4 @@
+---
+#cert_fqdn: zen-a2p.nodelauncher.com
+cert_fqdn: "{{ ansible_hostname }}.nodelauncher.com"
+#cert_fqdn: "{{ ansible_hostname }}.4nl.co"

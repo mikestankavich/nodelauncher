@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+backup_dir=~/znode-backups/znode-backup-$(date -I)
+backup_files=.zen/wallet.dat,secnodetracker/config/config.json
+api_url="https://securenodes2.na.zensystem.io/api/nodes/my/list?key=9fcbcb8ff54d0fe3812cb402e045c27be01fb689"
+#9cc2a0dea83d5baff4fb6fb2a3d1379251a30b6d"
+
+for node in $(curl -s $api_url | jq -r .nodes[].fqdn | sed s/.nodelauncher.com//g | sort); do
+    echo Backing up $node to $backup_dir/$node ...
+    mkdir -p $backup_dir/$node
+    scp -o StrictHostKeyChecking=accept-new -T zen@$node:{$backup_files} $backup_dir/$node/
+done
+
+api_url="https://supernodes1.na.zensystem.io/api/nodes/my/list?key=a1a9472a7678b4202ad1faae597f5072a1e8ca4c"
+#9f21761f704278276326e960fd369b218d69bdec"
+
+for node in $(curl -s $api_url | jq -r .nodes[].fqdn | sed s/.nodelauncher.com//g | sort); do
+    echo Backing up $node to $backup_dir/$node ...
+    mkdir -p $backup_dir/$node
+    scp -o StrictHostKeyChecking=accept-new -T zen@$node:{$backup_files} $backup_dir/$node/
+done

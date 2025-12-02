@@ -1,0 +1,30 @@
+---
+- name: Create /etc/ssl/local directory
+  file:
+    state: directory
+    dest: /etc/ssl/local
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Copy cert files to /etc/ssl/local
+  copy:
+    src: "files/{{ item }}"
+    dest: "/etc/ssl/local/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - nodelauncher.com.cer
+    - nodelauncher.com.key
+  register: copy_cert_files
+
+- name: Copy intermediate cert file to ca-certificates
+  copy:
+    src: "files/{{ intermediate_cert_file }}"
+    dest: "/usr/local/share/ca-certificates/{{ intermediate_cert_file }}"
+  register: copy_ca_file
+
+- name: Add cert file to cert authorities in ca-certificates
+  command: update-ca-certificates
+  when: copy_ca_file.changed or copy_cert_files.changed

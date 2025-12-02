@@ -1,0 +1,105 @@
+---
+
+- name: Try a getinfo to see if we are broken
+  become_user: "{{ zen_daemon_user }}"
+  command: /usr/bin/zen-cli getinfo
+  changed_when: false
+  failed_when: false
+  register: check_zen_cli
+
+- name: Restart zend if we fail on getinfo
+  command: monit restart zend
+  when: check_zen_cli.rc not in [0,28]
+
+- name: Get zen private addresses to see if we need to create one
+  become_user: "{{ zen_daemon_user }}"
+  command: /usr/bin/zen-cli z_listaddresses
+  register: zen_z_listaddresses
+  changed_when: false
+  until: zen_z_listaddresses.rc == 0
+  retries: 10
+  delay: 5
+
+- name: Create zen private addresses
+  become_user: "{{ zen_daemon_user }}"
+  command: zen-cli z_getnewaddress
+  when: zen_z_listaddresses.stdout == '[\n]'
+  notify: restart_tracker
+
+#- name: Copy hacked node tracker setup file (need to clean up and PR)
+#  copy:
+#    src: files/unattended-setup.js
+#    dest: "/home/{{ zen_daemon_user }}/secnodetracker/unattended-setup.js"
+#    owner: "{{ zen_daemon_user }}"
+#    group: "{{ zen_daemon_user }}"
+#    mode: 0644
+
+# setting email and stakeaddr are separate tasks so they can have their own tags
+- name: Set stake address in nodetracker config
+  copy:
+    content: "{{ staking_address }}"
+    dest: "/home/{{ zen_daemon_user }}/secnodetracker/config/stakeaddr"
+  notify: restart_tracker
+  when: staking_address is defined and staking_address
+  tags: change_stake_addr
+
+- name: Set node id in nodetracker config
+  copy:
+    content: "{{ node_id }}"
+    dest: "/home/{{ zen_daemon_user }}/secnodetracker/config/nodeid"
+  notify: restart_tracker
+  when: node_id | default(0) | int
+  tags: change_node_id
+
+- name: Set email in nodetracker config
+  copy:
+    content: "{{ notify_email }}"
+    dest: "/home/{{ zen_daemon_user }}/secnodetracker/config/email"
+  notify: restart_tracker
+  tags: change_email
+
+- name: Run nodetracker setup to pick up server details
+  become_user: "{{ zen_daemon_user }}"
+  expect:
+    command: node setup.js
+    chdir: ~/secnodetracker
+    responses:
+      transparent: ''
+      email: ''
+      hostname: ''
+      version: ''
+      code: ''
+  changed_when: false
+#  when: staking_address is defined and notify_email is defined
+  when: false
+  tags: change_email,change_stake_addr,change_node_id
+
+#- name: See if pm2 in nodetracker
+#  become_user: "{{ zen_daemon_user }}"
+#  command: pm2 prettylist
+#  args:
+#    chdir: ~/secnodetracker
+#  register: pm2_list
+#  changed_when: false
+#
+## start nodetracker with pm2
+#- name: Start nodetracker with pm2
+#  become_user: "{{ zen_daemon_user }}"
+#  command: pm2 start app.js --name securenodetracker
+#  args:
+#    chdir: ~/secnodetracker
+#  when:  not pm2_list.stdout_lines | select('match', '\s+name.\s.securenodetracker.,') | list
+#  register: start_tracker
+#
+#- name: Enable nodetracker to run at startup
+#  command: "env PATH=$PATH:/usr/local/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u {{ zen_daemon_user }} --hp /home/{{ zen_daemon_user }}"
+#  args:
+#    chdir: "/home/{{ zen_daemon_user }}/secnodetracker"
+#  when: start_tracker.changed
+#
+#- name: Save pm2 config
+#  become_user: "{{ zen_daemon_user }}"
+#  command: pm2 save
+#  args:
+#    chdir: ~/secnodetracker
+#  when: start_tracker.changed

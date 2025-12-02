@@ -1,0 +1,1198 @@
+lxd:
+  hosts:
+    sb20.4nl.co:
+      name: sb20
+      ip_address: 192.99.8.217
+      ip_address6: "2607:5300:60:39d9::"
+      gateway6: 2607:5300:60:39ff:ff:ff:ff:ff
+      nic_device: enp3s0
+      server_disk_devices:
+        - /dev/sda
+        - /dev/sdb
+      node_ram: 5%
+      node_cpu: 5%
+      node_count: 20
+    sb21.4nl.co:
+      name: sb21
+      ip_address: 198.27.80.134
+      ip_address6: "2607:5300:60:2186::"
+      gateway6: 2607:5300:60:21ff:ff:ff:ff:ff
+      nic_device: eno1
+      server_disk_devices:
+        - /dev/sda
+        - /dev/sdb
+      node_ram: 5%
+      node_cpu: 5%
+      node_count: 20
+      lxd_image: zen-base
+    sb22.4nl.co:
+      name: sb22
+      ip_address: 198.27.67.181
+      ip_address6: "2607:5300:60:1cb5::"
+      gateway6: 2607:5300:60:1cff:ff:ff:ff:ff
+      nic_device: eno1
+      server_disk_devices:
+        - /dev/sda
+        - /dev/sdb
+      node_ram: 5%
+      node_cpu: 5%
+      node_count: 20
+    sb23.4nl.co:
+      name: sb23
+      ip_address: 192.99.8.23
+      ip_address6: "2607:5300:60:3917::"
+      gateway6: 2607:5300:60:39ff:ff:ff:ff:ff
+      nic_device: enp3s0
+      server_disk_devices:
+        - /dev/sda
+        - /dev/sdb
+      node_ram: 5%
+      node_cpu: 5%
+      node_count: 20
+    sb24.4nl.co:
+      name: sb24
+      ip_address: 198.27.68.224
+      ip_address6: "2607:5300:60:1de0::"
+      gateway6: 2607:5300:60:1dff:ff:ff:ff:ff
+      nic_device: enp3s0
+      server_disk_devices:
+        - /dev/sda
+        - /dev/sdb
+      node_ram: 5%
+      node_cpu: 5%
+      node_count: 20
+    sb25.4nl.co:
+      name: sb25
+      ip_address: 198.27.68.207
+      ip_address6: "2607:5300:60:1dcf::"
+      gateway6: 2607:5300:60:1dff:ff:ff:ff:ff
+      nic_device: eno1
+      server_disk_devices:
+        - /dev/sda
+        - /dev/sdb
+      node_ram: 5%
+      node_cpu: 5%
+      node_count: 20
+    sb26.4nl.co:
+      name: sb26
+      ip_address: 198.27.67.129
+      ip_address6: "2607:5300:60:1c81::"
+      gateway6: 2607:5300:60:1cff:ff:ff:ff:ff
+      nic_device: eno1
+      server_disk_devices:
+        - /dev/sda
+        - /dev/sdb
+      node_ram: 5%
+      node_cpu: 5%
+      node_count: 20
+    sb27.4nl.co:
+      name: sb27
+      ip_address: 192.99.5.122
+      ip_address6: "2607:5300:60:367a::"
+      gateway6: 2607:5300:60:36ff:ff:ff:ff:ff
+      nic_device: eno1
+      server_disk_devices:
+        - /dev/sda
+        - /dev/sdb
+      node_ram: 5%
+      node_cpu: 5%
+      node_count: 20
+    sb28.4nl.co:
+      name: sb28
+      ip_address: 158.69.246.31
+      ip_address6: "2607:5300:120:61f::"
+      gateway6: 2607:5300:120:6ff:ff:ff:ff:ff
+      nic_device: enp3s0
+      server_disk_devices:
+        - /dev/sda
+        - /dev/sdb
+      node_ram: 5%
+      node_cpu: 5%
+      node_count: 20
+    sb29.4nl.co:
+      name: sb29
+      ip_address: 192.99.4.102
+      ip_address6: "2607:5300:60:3566::"
+      gateway6: 2607:5300:60:35ff:ff:ff:ff:ff
+      nic_device: eno1
+      server_disk_devices:
+        - /dev/sda
+        - /dev/sdb
+      node_ram: 5%
+      node_cpu: 5%
+      node_count: 20
+
+sb20:
+  vars:
+    tracker_region: na
+  hosts:
+    sb20-z00.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1000
+    sb20-z01.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1001
+    sb20-z02.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1002
+    sb20-z03.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1003
+    sb20-z04.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1004
+    sb20-z05.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1005
+    sb20-z06.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1006
+    sb20-z07.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1007
+    sb20-z08.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1008
+    sb20-z09.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1009
+    sb20-z0a.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::100a
+    sb20-z0b.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::100b
+    sb20-z0c.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::100c
+    sb20-z0d.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::100d
+    sb20-z0e.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::100e
+    sb20-z0f.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::100f
+    sb20-z10.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1010
+    sb20-z11.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1011
+    sb20-z12.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1012
+    sb20-z13.nodelauncher.com:
+      ip_address6: 2607:5300:60:39d9::1013
+sb21:
+  vars:
+    tracker_region: na
+  hosts:
+    sb21-z00.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1000
+    sb21-z01.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1001
+    sb21-z02.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1002
+    sb21-z03.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1003
+    sb21-z04.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1004
+    sb21-z05.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1005
+    sb21-z06.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1006
+    sb21-z07.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1007
+    sb21-z08.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1008
+    sb21-z09.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1009
+    sb21-z0a.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::100a
+    sb21-z0b.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::100b
+    sb21-z0c.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::100c
+    sb21-z0d.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::100d
+    sb21-z0e.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::100e
+    sb21-z0f.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::100f
+    sb21-z10.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1010
+    sb21-z11.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1011
+    sb21-z12.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1012
+    sb21-z13.nodelauncher.com:
+      ip_address6: 2607:5300:60:2186::1013
+sb22:
+  vars:
+    tracker_region: na
+  hosts:
+    sb22-z00.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1000
+    sb22-z01.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1001
+    sb22-z02.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1002
+    sb22-z03.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1003
+    sb22-z04.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1004
+    sb22-z05.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1005
+    sb22-z06.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1006
+    sb22-z07.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1007
+    sb22-z08.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1008
+    sb22-z09.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1009
+    sb22-z0a.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::100a
+    sb22-z0b.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::100b
+    sb22-z0c.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::100c
+    sb22-z0d.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::100d
+    sb22-z0e.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::100e
+    sb22-z0f.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::100f
+    sb22-z10.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1010
+    sb22-z11.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1011
+    sb22-z12.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1012
+    sb22-z13.nodelauncher.com:
+      ip_address6: 2607:5300:60:1cb5::1013
+sb23:
+  vars:
+    tracker_region: na
+  hosts:
+    sb23-z00.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1000
+    sb23-z01.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1001
+    sb23-z02.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1002
+    sb23-z03.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1003
+    sb23-z04.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1004
+    sb23-z05.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1005
+    sb23-z06.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1006
+    sb23-z07.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1007
+    sb23-z08.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1008
+    sb23-z09.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1009
+    sb23-z0a.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::100a
+    sb23-z0b.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::100b
+    sb23-z0c.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::100c
+    sb23-z0d.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::100d
+    sb23-z0e.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::100e
+    sb23-z0f.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::100f
+    sb23-z10.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1010
+    sb23-z11.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1011
+    sb23-z12.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1012
+    sb23-z13.nodelauncher.com:
+      ip_address6: 2607:5300:60:3917::1013
+sb24:
+  vars:
+    tracker_region: na
+  hosts:
+    sb24-z00.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1000
+    sb24-z01.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1001
+    sb24-z02.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1002
+    sb24-z03.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1003
+    sb24-z04.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1004
+    sb24-z05.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1005
+    sb24-z06.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1006
+    sb24-z07.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1007
+    sb24-z08.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1008
+    sb24-z09.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1009
+    sb24-z0a.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::100a
+    sb24-z0b.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::100b
+    sb24-z0c.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::100c
+    sb24-z0d.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::100d
+    sb24-z0e.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::100e
+    sb24-z0f.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::100f
+    sb24-z10.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1010
+    sb24-z11.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1011
+    sb24-z12.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1012
+    sb24-z13.nodelauncher.com:
+      ip_address6: 2607:5300:60:1de0::1013
+sb25:
+  vars:
+    tracker_region: na
+  hosts:
+    sb25-z00.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1000
+    sb25-z01.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1001
+    sb25-z02.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1002
+    sb25-z03.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1003
+    sb25-z04.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1004
+    sb25-z05.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1005
+    sb25-z06.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1006
+    sb25-z07.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1007
+    sb25-z08.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1008
+    sb25-z09.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1009
+    sb25-z0a.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::100a
+    sb25-z0b.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::100b
+    sb25-z0c.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::100c
+    sb25-z0d.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::100d
+    sb25-z0e.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::100e
+    sb25-z0f.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::100f
+    sb25-z10.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1010
+    sb25-z11.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1011
+    sb25-z12.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1012
+    sb25-z13.nodelauncher.com:
+      ip_address6: 2607:5300:60:1dcf::1013
+sb26:
+  vars:
+    tracker_region: na
+  hosts:
+    sb26-z00.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1000
+    sb26-z01.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1001
+    sb26-z02.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1002
+    sb26-z03.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1003
+    sb26-z04.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1004
+    sb26-z05.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1005
+    sb26-z06.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1006
+    sb26-z07.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1007
+    sb26-z08.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1008
+    sb26-z09.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1009
+    sb26-z0a.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::100a
+    sb26-z0b.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::100b
+    sb26-z0c.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::100c
+    sb26-z0d.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::100d
+    sb26-z0e.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::100e
+    sb26-z0f.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::100f
+    sb26-z10.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1010
+    sb26-z11.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1011
+    sb26-z12.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1012
+    sb26-z13.nodelauncher.com:
+      ip_address6: 2607:5300:60:1c81::1013
+sb27:
+  vars:
+    tracker_region: na
+  hosts:
+    sb27-z00.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1000
+    sb27-z01.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1001
+    sb27-z02.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1002
+    sb27-z03.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1003
+    sb27-z04.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1004
+    sb27-z05.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1005
+    sb27-z06.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1006
+    sb27-z07.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1007
+    sb27-z08.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1008
+    sb27-z09.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1009
+    sb27-z0a.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::100a
+    sb27-z0b.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::100b
+    sb27-z0c.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::100c
+    sb27-z0d.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::100d
+    sb27-z0e.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::100e
+    sb27-z0f.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::100f
+    sb27-z10.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1010
+    sb27-z11.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1011
+    sb27-z12.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1012
+    sb27-z13.nodelauncher.com:
+      ip_address6: 2607:5300:60:367a::1013
+sb28:
+  vars:
+    tracker_region: na
+  hosts:
+    sb28-z00.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1000
+    sb28-z01.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1001
+    sb28-z02.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1002
+    sb28-z03.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1003
+    sb28-z04.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1004
+    sb28-z05.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1005
+    sb28-z06.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1006
+    sb28-z07.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1007
+    sb28-z08.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1008
+    sb28-z09.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1009
+    sb28-z0a.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::100a
+    sb28-z0b.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::100b
+    sb28-z0c.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::100c
+    sb28-z0d.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::100d
+    sb28-z0e.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::100e
+    sb28-z0f.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::100f
+    sb28-z10.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1010
+    sb28-z11.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1011
+    sb28-z12.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1012
+    sb28-z13.nodelauncher.com:
+      ip_address6: 2607:5300:120:61f::1013
+sb29:
+  vars:
+    tracker_region: na
+  hosts:
+    sb29-z00.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1000
+    sb29-z01.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1001
+    sb29-z02.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1002
+    sb29-z03.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1003
+    sb29-z04.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1004
+    sb29-z05.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1005
+    sb29-z06.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1006
+    sb29-z07.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1007
+    sb29-z08.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1008
+    sb29-z09.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1009
+    sb29-z0a.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::100a
+    sb29-z0b.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::100b
+    sb29-z0c.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::100c
+    sb29-z0d.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::100d
+    sb29-z0e.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::100e
+    sb29-z0f.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::100f
+    sb29-z10.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1010
+    sb29-z11.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1011
+    sb29-z12.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1012
+    sb29-z13.nodelauncher.com:
+      ip_address6: 2607:5300:60:3566::1013
+#    sb29-z15.nodelauncher.com:
+#      ip_address: 167.114.220.172
+#      ip_address6: 2607:5300:60:3566::1015
+
+zen:
+  children:
+#    sb20:
+#    sb21:
+    sb22:
+    sb23:
+    sb24:
+    sb25:
+    sb26:
+    sb27:
+    sb28:
+#    sb29:
+
+chalz:
+  hosts:
+    sb22-z05.nodelauncher.com:
+    sb22-z0d.nodelauncher.com:
+    sb22-z0e.nodelauncher.com:
+    sb24-z0e.nodelauncher.com:
+    sb24-z0f.nodelauncher.com:
+    sb26-z02.nodelauncher.com:
+    sb26-z08.nodelauncher.com:
+    sb26-z09.nodelauncher.com:
+    sb26-z0d.nodelauncher.com:
+    sb27-z0d.nodelauncher.com:
+    sb28-z0a.nodelauncher.com:
+
+destake:
+  hosts:
+    sb20-z01.nodelauncher.com:
+    sb20-z02.nodelauncher.com:
+    sb20-z03.nodelauncher.com:
+    sb20-z04.nodelauncher.com:
+    sb20-z05.nodelauncher.com:
+    sb20-z06.nodelauncher.com:
+    sb20-z07.nodelauncher.com:
+    sb20-z08.nodelauncher.com:
+    sb20-z09.nodelauncher.com:
+    sb20-z0a.nodelauncher.com:
+    sb20-z0b.nodelauncher.com:
+    sb20-z0c.nodelauncher.com:
+    sb20-z0d.nodelauncher.com:
+    sb20-z0e.nodelauncher.com:
+    sb20-z0f.nodelauncher.com:
+    sb20-z10.nodelauncher.com:
+    sb21-z00.nodelauncher.com:
+    sb21-z01.nodelauncher.com:
+    sb21-z02.nodelauncher.com:
+    sb21-z03.nodelauncher.com:
+    sb21-z04.nodelauncher.com:
+    sb21-z05.nodelauncher.com:
+    sb21-z06.nodelauncher.com:
+    sb21-z07.nodelauncher.com:
+    sb21-z08.nodelauncher.com:
+    sb21-z09.nodelauncher.com:
+    sb21-z0a.nodelauncher.com:
+    sb21-z0b.nodelauncher.com:
+    sb21-z0c.nodelauncher.com:
+    sb21-z0d.nodelauncher.com:
+    sb21-z0f.nodelauncher.com:
+    sb21-z10.nodelauncher.com:
+    sb21-z11.nodelauncher.com:
+    sb22-z05.nodelauncher.com:
+    sb22-z06.nodelauncher.com:
+    sb22-z07.nodelauncher.com:
+    sb22-z08.nodelauncher.com:
+    sb22-z09.nodelauncher.com:
+    sb22-z0a.nodelauncher.com:
+    sb22-z0b.nodelauncher.com:
+    sb22-z0c.nodelauncher.com:
+    sb22-z10.nodelauncher.com:
+    sb23-z00.nodelauncher.com:
+    sb23-z01.nodelauncher.com:
+    sb23-z02.nodelauncher.com:
+    sb23-z03.nodelauncher.com:
+    sb23-z04.nodelauncher.com:
+    sb23-z05.nodelauncher.com:
+    sb23-z06.nodelauncher.com:
+    sb23-z07.nodelauncher.com:
+    sb23-z08.nodelauncher.com:
+    sb23-z09.nodelauncher.com:
+    sb23-z0a.nodelauncher.com:
+    sb23-z0b.nodelauncher.com:
+    sb23-z0c.nodelauncher.com:
+    sb23-z0d.nodelauncher.com:
+    sb23-z0e.nodelauncher.com:
+    sb23-z0f.nodelauncher.com:
+    sb23-z10.nodelauncher.com:
+    sb23-z11.nodelauncher.com:
+    sb24-z00.nodelauncher.com:
+    sb24-z01.nodelauncher.com:
+    sb24-z02.nodelauncher.com:
+    sb24-z03.nodelauncher.com:
+    sb24-z04.nodelauncher.com:
+    sb24-z05.nodelauncher.com:
+    sb24-z06.nodelauncher.com:
+    sb24-z07.nodelauncher.com:
+    sb24-z08.nodelauncher.com:
+    sb24-z09.nodelauncher.com:
+    sb24-z0a.nodelauncher.com:
+    sb24-z0b.nodelauncher.com:
+    sb24-z0c.nodelauncher.com:
+    sb24-z0d.nodelauncher.com:
+    sb24-z0e.nodelauncher.com:
+    sb24-z0f.nodelauncher.com:
+    sb24-z10.nodelauncher.com:
+    sb25-z01.nodelauncher.com:
+    sb25-z02.nodelauncher.com:
+    sb25-z03.nodelauncher.com:
+    sb25-z04.nodelauncher.com:
+    sb25-z05.nodelauncher.com:
+    sb25-z06.nodelauncher.com:
+    sb25-z07.nodelauncher.com:
+    sb25-z08.nodelauncher.com:
+    sb25-z09.nodelauncher.com:
+    sb25-z0a.nodelauncher.com:
+    sb25-z0b.nodelauncher.com:
+    sb25-z0c.nodelauncher.com:
+    sb25-z0d.nodelauncher.com:
+    sb25-z0e.nodelauncher.com:
+    sb25-z0f.nodelauncher.com:
+    sb25-z10.nodelauncher.com:
+    sb26-z01.nodelauncher.com:
+    sb26-z04.nodelauncher.com:
+    sb26-z08.nodelauncher.com:
+    sb26-z09.nodelauncher.com:
+    sb26-z0a.nodelauncher.com:
+    sb26-z0b.nodelauncher.com:
+    sb26-z0c.nodelauncher.com:
+    sb26-z0d.nodelauncher.com:
+    sb26-z10.nodelauncher.com:
+    sb27-z00.nodelauncher.com:
+    sb27-z01.nodelauncher.com:
+    sb27-z02.nodelauncher.com:
+    sb27-z03.nodelauncher.com:
+    sb27-z04.nodelauncher.com:
+    sb27-z06.nodelauncher.com:
+    sb27-z07.nodelauncher.com:
+    sb27-z08.nodelauncher.com:
+    sb27-z09.nodelauncher.com:
+    sb27-z0a.nodelauncher.com:
+    sb27-z0b.nodelauncher.com:
+    sb27-z0c.nodelauncher.com:
+    sb27-z0e.nodelauncher.com:
+    sb27-z0f.nodelauncher.com:
+    sb27-z10.nodelauncher.com:
+    sb28-z00.nodelauncher.com:
+    sb28-z01.nodelauncher.com:
+    sb28-z02.nodelauncher.com:
+    sb28-z03.nodelauncher.com:
+    sb28-z04.nodelauncher.com:
+    sb28-z05.nodelauncher.com:
+    sb28-z06.nodelauncher.com:
+    sb28-z07.nodelauncher.com:
+    sb28-z08.nodelauncher.com:
+    sb28-z09.nodelauncher.com:
+    sb28-z0b.nodelauncher.com:
+    sb28-z0c.nodelauncher.com:
+    sb28-z0f.nodelauncher.com:
+    sb28-z10.nodelauncher.com:
+
+restake:
+  hosts:
+    sb20-z01.nodelauncher.com:
+    sb20-z02.nodelauncher.com:
+    sb20-z03.nodelauncher.com:
+    sb20-z04.nodelauncher.com:
+    sb20-z05.nodelauncher.com:
+    sb20-z08.nodelauncher.com:
+    sb20-z09.nodelauncher.com:
+    sb20-z0a.nodelauncher.com:
+    sb20-z0b.nodelauncher.com:
+    sb20-z0c.nodelauncher.com:
+    sb20-z0d.nodelauncher.com:
+    sb20-z0e.nodelauncher.com:
+    sb20-z0f.nodelauncher.com:
+    sb20-z10.nodelauncher.com:
+    sb21-z00.nodelauncher.com:
+    sb21-z01.nodelauncher.com:
+    sb21-z02.nodelauncher.com:
+    sb21-z03.nodelauncher.com:
+    sb21-z04.nodelauncher.com:
+    sb21-z05.nodelauncher.com:
+    sb21-z06.nodelauncher.com:
+    sb21-z07.nodelauncher.com:
+    sb21-z08.nodelauncher.com:
+    sb21-z09.nodelauncher.com:
+    sb21-z0a.nodelauncher.com:
+    sb21-z0b.nodelauncher.com:
+    sb21-z0c.nodelauncher.com:
+    sb21-z10.nodelauncher.com:
+    sb21-z11.nodelauncher.com:
+    sb22-z06.nodelauncher.com:
+    sb22-z07.nodelauncher.com:
+    sb22-z08.nodelauncher.com:
+    sb22-z09.nodelauncher.com:
+    sb22-z0a.nodelauncher.com:
+    sb22-z0b.nodelauncher.com:
+    sb22-z0c.nodelauncher.com:
+    sb22-z10.nodelauncher.com:
+    sb23-z00.nodelauncher.com:
+    sb23-z01.nodelauncher.com:
+    sb23-z02.nodelauncher.com:
+    sb23-z03.nodelauncher.com:
+    sb23-z04.nodelauncher.com:
+    sb23-z05.nodelauncher.com:
+    sb23-z06.nodelauncher.com:
+    sb23-z07.nodelauncher.com:
+    sb23-z08.nodelauncher.com:
+    sb23-z09.nodelauncher.com:
+    sb23-z0a.nodelauncher.com:
+    sb23-z0b.nodelauncher.com:
+    sb23-z0c.nodelauncher.com:
+    sb23-z0d.nodelauncher.com:
+    sb23-z0e.nodelauncher.com:
+    sb23-z0f.nodelauncher.com:
+    sb23-z10.nodelauncher.com:
+    sb23-z11.nodelauncher.com:
+    sb24-z00.nodelauncher.com:
+    sb24-z01.nodelauncher.com:
+    sb24-z02.nodelauncher.com:
+    sb24-z03.nodelauncher.com:
+    sb24-z04.nodelauncher.com:
+    sb24-z05.nodelauncher.com:
+    sb24-z06.nodelauncher.com:
+    sb24-z07.nodelauncher.com:
+    sb24-z08.nodelauncher.com:
+    sb24-z09.nodelauncher.com:
+    sb24-z0a.nodelauncher.com:
+    sb24-z0b.nodelauncher.com:
+    sb24-z0c.nodelauncher.com:
+    sb24-z0d.nodelauncher.com:
+    sb24-z10.nodelauncher.com:
+    sb25-z01.nodelauncher.com:
+    sb25-z02.nodelauncher.com:
+    sb25-z03.nodelauncher.com:
+    sb25-z04.nodelauncher.com:
+    sb25-z05.nodelauncher.com:
+    sb25-z06.nodelauncher.com:
+    sb25-z07.nodelauncher.com:
+    sb25-z08.nodelauncher.com:
+    sb25-z09.nodelauncher.com:
+    sb25-z0a.nodelauncher.com:
+    sb25-z0b.nodelauncher.com:
+    sb25-z0c.nodelauncher.com:
+    sb25-z0d.nodelauncher.com:
+    sb25-z0e.nodelauncher.com:
+    sb25-z0f.nodelauncher.com:
+    sb25-z10.nodelauncher.com:
+    sb26-z01.nodelauncher.com:
+    sb26-z04.nodelauncher.com:
+    sb26-z0a.nodelauncher.com:
+    sb26-z0b.nodelauncher.com:
+    sb26-z0c.nodelauncher.com:
+    sb26-z10.nodelauncher.com:
+    sb27-z00.nodelauncher.com:
+    sb27-z01.nodelauncher.com:
+    sb27-z02.nodelauncher.com:
+    sb27-z03.nodelauncher.com:
+    sb27-z04.nodelauncher.com:
+    sb27-z06.nodelauncher.com:
+    sb27-z07.nodelauncher.com:
+    sb27-z08.nodelauncher.com:
+    sb27-z09.nodelauncher.com:
+    sb27-z0a.nodelauncher.com:
+    sb27-z0b.nodelauncher.com:
+    sb27-z0c.nodelauncher.com:
+    sb27-z0e.nodelauncher.com:
+    sb27-z0f.nodelauncher.com:
+    sb27-z10.nodelauncher.com:
+    sb28-z00.nodelauncher.com:
+    sb28-z01.nodelauncher.com:
+    sb28-z02.nodelauncher.com:
+    sb28-z03.nodelauncher.com:
+    sb28-z04.nodelauncher.com:
+    sb28-z05.nodelauncher.com:
+    sb28-z06.nodelauncher.com:
+    sb28-z07.nodelauncher.com:
+    sb28-z08.nodelauncher.com:
+    sb28-z09.nodelauncher.com:
+    sb28-z0b.nodelauncher.com:
+    sb28-z0c.nodelauncher.com:
+    sb28-z0f.nodelauncher.com:
+    sb28-z10.nodelauncher.com:
+
+rewallet:
+  hosts:
+    sb20-z00.nodelauncher.com:
+    sb20-z06.nodelauncher.com:
+    sb20-z07.nodelauncher.com:
+    sb20-z08.nodelauncher.com:
+    sb20-z09.nodelauncher.com:
+    sb20-z0a.nodelauncher.com:
+    sb20-z0b.nodelauncher.com:
+    sb20-z11.nodelauncher.com:
+    sb20-z12.nodelauncher.com:
+    sb20-z13.nodelauncher.com:
+    sb21-z06.nodelauncher.com:
+    sb21-z07.nodelauncher.com:
+    sb21-z08.nodelauncher.com:
+    sb21-z09.nodelauncher.com:
+    sb21-z0b.nodelauncher.com:
+    sb21-z0d.nodelauncher.com:
+    sb21-z0e.nodelauncher.com:
+    sb21-z0f.nodelauncher.com:
+    sb21-z10.nodelauncher.com:
+    sb21-z12.nodelauncher.com:
+    sb21-z13.nodelauncher.com:
+    sb22-z00.nodelauncher.com:
+    sb22-z01.nodelauncher.com:
+    sb22-z02.nodelauncher.com:
+    sb22-z03.nodelauncher.com:
+    sb22-z04.nodelauncher.com:
+    sb22-z05.nodelauncher.com:
+    sb22-z06.nodelauncher.com:
+    sb22-z08.nodelauncher.com:
+    sb22-z0f.nodelauncher.com:
+    sb22-z11.nodelauncher.com:
+    sb22-z12.nodelauncher.com:
+    sb22-z13.nodelauncher.com:
+    sb23-z07.nodelauncher.com:
+    sb23-z0a.nodelauncher.com:
+    sb23-z0b.nodelauncher.com:
+    sb23-z0c.nodelauncher.com:
+    sb23-z0e.nodelauncher.com:
+    sb23-z0f.nodelauncher.com:
+    sb23-z12.nodelauncher.com:
+    sb23-z13.nodelauncher.com:
+    sb24-z05.nodelauncher.com:
+    sb24-z07.nodelauncher.com:
+    sb24-z08.nodelauncher.com:
+    sb24-z09.nodelauncher.com:
+    sb24-z0a.nodelauncher.com:
+    sb24-z0b.nodelauncher.com:
+    sb24-z0c.nodelauncher.com:
+    sb24-z0d.nodelauncher.com:
+    sb24-z0e.nodelauncher.com:
+    sb24-z0f.nodelauncher.com:
+    sb24-z10.nodelauncher.com:
+    sb24-z11.nodelauncher.com:
+    sb24-z12.nodelauncher.com:
+    sb24-z13.nodelauncher.com:
+    sb25-z00.nodelauncher.com:
+    sb25-z0d.nodelauncher.com:
+    sb25-z11.nodelauncher.com:
+    sb25-z12.nodelauncher.com:
+    sb25-z13.nodelauncher.com:
+    sb26-z00.nodelauncher.com:
+    sb26-z01.nodelauncher.com:
+    sb26-z03.nodelauncher.com:
+    sb26-z04.nodelauncher.com:
+    sb26-z05.nodelauncher.com:
+    sb26-z06.nodelauncher.com:
+    sb26-z07.nodelauncher.com:
+    sb26-z08.nodelauncher.com:
+    sb26-z09.nodelauncher.com:
+    sb26-z0a.nodelauncher.com:
+    sb26-z0b.nodelauncher.com:
+    sb26-z0c.nodelauncher.com:
+    sb26-z0d.nodelauncher.com:
+    sb26-z0e.nodelauncher.com:
+    sb26-z0f.nodelauncher.com:
+    sb26-z10.nodelauncher.com:
+    sb26-z11.nodelauncher.com:
+    sb26-z12.nodelauncher.com:
+    sb26-z13.nodelauncher.com:
+    sb27-z00.nodelauncher.com:
+    sb27-z01.nodelauncher.com:
+    sb27-z05.nodelauncher.com:
+    sb27-z06.nodelauncher.com:
+    sb27-z07.nodelauncher.com:
+    sb27-z08.nodelauncher.com:
+    sb27-z09.nodelauncher.com:
+    sb27-z0a.nodelauncher.com:
+    sb27-z0c.nodelauncher.com:
+    sb27-z0d.nodelauncher.com:
+    sb27-z0e.nodelauncher.com:
+    sb27-z0f.nodelauncher.com:
+    sb27-z10.nodelauncher.com:
+    sb27-z11.nodelauncher.com:
+    sb27-z12.nodelauncher.com:
+    sb27-z13.nodelauncher.com:
+    sb28-z09.nodelauncher.com:
+    sb28-z0c.nodelauncher.com:
+    sb28-z0d.nodelauncher.com:
+    sb28-z0e.nodelauncher.com:
+    sb28-z10.nodelauncher.com:
+    sb28-z11.nodelauncher.com:
+    sb28-z12.nodelauncher.com:
+    sb28-z13.nodelauncher.com:
+
+inactive:
+  hosts:
+    sb20-z00.nodelauncher.com:
+    sb20-z06.nodelauncher.com:
+    sb20-z07.nodelauncher.com:
+    sb20-z08.nodelauncher.com:
+    sb20-z11.nodelauncher.com:
+    sb20-z12.nodelauncher.com:
+    sb20-z13.nodelauncher.com:
+    sb21-z06.nodelauncher.com:
+    sb21-z0d.nodelauncher.com:
+    sb21-z0e.nodelauncher.com:
+    sb21-z0f.nodelauncher.com:
+    sb21-z10.nodelauncher.com:
+    sb21-z12.nodelauncher.com:
+    sb21-z13.nodelauncher.com:
+    sb22-z00.nodelauncher.com:
+    sb22-z01.nodelauncher.com:
+    sb22-z02.nodelauncher.com:
+    sb22-z03.nodelauncher.com:
+    sb22-z04.nodelauncher.com:
+    sb22-z05.nodelauncher.com:
+    sb22-z06.nodelauncher.com:
+    sb22-z08.nodelauncher.com:
+    sb22-z0f.nodelauncher.com:
+    sb22-z11.nodelauncher.com:
+    sb22-z12.nodelauncher.com:
+    sb22-z13.nodelauncher.com:
+    sb23-z07.nodelauncher.com:
+    sb23-z12.nodelauncher.com:
+    sb23-z13.nodelauncher.com:
+    sb24-z0b.nodelauncher.com:
+    sb24-z0c.nodelauncher.com:
+    sb24-z0d.nodelauncher.com:
+    sb24-z0e.nodelauncher.com:
+    sb24-z0f.nodelauncher.com:
+    sb24-z10.nodelauncher.com:
+    sb24-z11.nodelauncher.com:
+    sb24-z12.nodelauncher.com:
+    sb24-z13.nodelauncher.com:
+    sb25-z00.nodelauncher.com:
+    sb25-z0d.nodelauncher.com:
+    sb25-z11.nodelauncher.com:
+    sb25-z12.nodelauncher.com:
+    sb25-z13.nodelauncher.com:
+    sb26-z00.nodelauncher.com:
+    sb26-z03.nodelauncher.com:
+    sb26-z05.nodelauncher.com:
+    sb26-z06.nodelauncher.com:
+    sb26-z07.nodelauncher.com:
+    sb26-z08.nodelauncher.com:
+    sb26-z09.nodelauncher.com:
+    sb26-z0a.nodelauncher.com:
+    sb26-z0b.nodelauncher.com:
+    sb26-z0d.nodelauncher.com:
+    sb26-z0e.nodelauncher.com:
+    sb26-z0f.nodelauncher.com:
+    sb26-z10.nodelauncher.com:
+    sb26-z11.nodelauncher.com:
+    sb26-z12.nodelauncher.com:
+    sb26-z13.nodelauncher.com:
+    sb27-z00.nodelauncher.com:
+    sb27-z01.nodelauncher.com:
+    sb27-z05.nodelauncher.com:
+    sb27-z0a.nodelauncher.com:
+    sb27-z0c.nodelauncher.com:
+    sb27-z0d.nodelauncher.com:
+    sb27-z10.nodelauncher.com:
+    sb27-z11.nodelauncher.com:
+    sb27-z12.nodelauncher.com:
+    sb27-z13.nodelauncher.com:
+    sb28-z0d.nodelauncher.com:
+    sb28-z0e.nodelauncher.com:
+    sb28-z10.nodelauncher.com:
+    sb28-z11.nodelauncher.com:
+    sb28-z12.nodelauncher.com:
+    sb28-z13.nodelauncher.com:
+    sb29-z00.nodelauncher.com:
+    sb29-z01.nodelauncher.com:
+    sb29-z02.nodelauncher.com:
+    sb29-z03.nodelauncher.com:
+    sb29-z04.nodelauncher.com:
+    sb29-z05.nodelauncher.com:
+    sb29-z06.nodelauncher.com:
+    sb29-z07.nodelauncher.com:
+    sb29-z08.nodelauncher.com:
+    sb29-z09.nodelauncher.com:
+    sb29-z0a.nodelauncher.com:
+    sb29-z0b.nodelauncher.com:
+    sb29-z0c.nodelauncher.com:
+    sb29-z0d.nodelauncher.com:
+    sb29-z0e.nodelauncher.com:
+    sb29-z0f.nodelauncher.com:
+    sb29-z10.nodelauncher.com:
+    sb29-z11.nodelauncher.com:
+    sb29-z12.nodelauncher.com:
+    sb29-z13.nodelauncher.com:
+
+active:
+  hosts:
+    sb20-z01.nodelauncher.com:
+    sb20-z02.nodelauncher.com:
+    sb20-z03.nodelauncher.com:
+    sb20-z04.nodelauncher.com:
+    sb20-z05.nodelauncher.com:
+    sb20-z09.nodelauncher.com:
+    sb20-z0a.nodelauncher.com:
+    sb20-z0b.nodelauncher.com:
+    sb20-z0c.nodelauncher.com:
+    sb20-z0d.nodelauncher.com:
+    sb20-z0e.nodelauncher.com:
+    sb20-z0f.nodelauncher.com:
+    sb20-z10.nodelauncher.com:
+    sb21-z00.nodelauncher.com:
+    sb21-z01.nodelauncher.com:
+    sb21-z02.nodelauncher.com:
+    sb21-z03.nodelauncher.com:
+    sb21-z04.nodelauncher.com:
+    sb21-z05.nodelauncher.com:
+    sb21-z07.nodelauncher.com:
+    sb21-z08.nodelauncher.com:
+    sb21-z09.nodelauncher.com:
+    sb21-z0a.nodelauncher.com:
+    sb21-z0b.nodelauncher.com:
+    sb21-z0c.nodelauncher.com:
+    sb21-z11.nodelauncher.com:
+    sb22-z07.nodelauncher.com:
+    sb22-z09.nodelauncher.com:
+    sb22-z0a.nodelauncher.com:
+    sb22-z0b.nodelauncher.com:
+    sb22-z0c.nodelauncher.com:
+    sb22-z0d.nodelauncher.com:
+    sb22-z0e.nodelauncher.com:
+    sb22-z10.nodelauncher.com:
+    sb23-z00.nodelauncher.com:
+    sb23-z01.nodelauncher.com:
+    sb23-z02.nodelauncher.com:
+    sb23-z03.nodelauncher.com:
+    sb23-z04.nodelauncher.com:
+    sb23-z05.nodelauncher.com:
+    sb23-z06.nodelauncher.com:
+    sb23-z08.nodelauncher.com:
+    sb23-z09.nodelauncher.com:
+    sb23-z0a.nodelauncher.com:
+    sb23-z0b.nodelauncher.com:
+    sb23-z0c.nodelauncher.com:
+    sb23-z0d.nodelauncher.com:
+    sb23-z0e.nodelauncher.com:
+    sb23-z0f.nodelauncher.com:
+    sb23-z10.nodelauncher.com:
+    sb23-z11.nodelauncher.com:
+    sb24-z00.nodelauncher.com:
+    sb24-z01.nodelauncher.com:
+    sb24-z02.nodelauncher.com:
+    sb24-z03.nodelauncher.com:
+    sb24-z04.nodelauncher.com:
+    sb24-z05.nodelauncher.com:
+    sb24-z06.nodelauncher.com:
+    sb24-z07.nodelauncher.com:
+    sb24-z08.nodelauncher.com:
+    sb24-z09.nodelauncher.com:
+    sb24-z0a.nodelauncher.com:
+    sb25-z01.nodelauncher.com:
+    sb25-z02.nodelauncher.com:
+    sb25-z03.nodelauncher.com:
+    sb25-z04.nodelauncher.com:
+    sb25-z05.nodelauncher.com:
+    sb25-z06.nodelauncher.com:
+    sb25-z07.nodelauncher.com:
+    sb25-z08.nodelauncher.com:
+    sb25-z09.nodelauncher.com:
+    sb25-z0a.nodelauncher.com:
+    sb25-z0b.nodelauncher.com:
+    sb25-z0c.nodelauncher.com:
+    sb25-z0e.nodelauncher.com:
+    sb25-z0f.nodelauncher.com:
+    sb25-z10.nodelauncher.com:
+    sb26-z01.nodelauncher.com:
+    sb26-z02.nodelauncher.com:
+    sb26-z04.nodelauncher.com:
+    sb26-z0c.nodelauncher.com:
+    sb27-z02.nodelauncher.com:
+    sb27-z03.nodelauncher.com:
+    sb27-z04.nodelauncher.com:
+    sb27-z06.nodelauncher.com:
+    sb27-z07.nodelauncher.com:
+    sb27-z08.nodelauncher.com:
+    sb27-z09.nodelauncher.com:
+    sb27-z0b.nodelauncher.com:
+    sb27-z0e.nodelauncher.com:
+    sb27-z0f.nodelauncher.com:
+    sb28-z00.nodelauncher.com:
+    sb28-z01.nodelauncher.com:
+    sb28-z02.nodelauncher.com:
+    sb28-z03.nodelauncher.com:
+    sb28-z04.nodelauncher.com:
+    sb28-z05.nodelauncher.com:
+    sb28-z06.nodelauncher.com:
+    sb28-z07.nodelauncher.com:
+    sb28-z08.nodelauncher.com:
+    sb28-z09.nodelauncher.com:
+    sb28-z0a.nodelauncher.com:
+    sb28-z0b.nodelauncher.com:
+    sb28-z0c.nodelauncher.com:
+    sb28-z0f.nodelauncher.com:
+
+eol:
+  hosts:
+    sb20-z06.nodelauncher.com:
+    sb20-z07.nodelauncher.com:
+    sb20-z08.nodelauncher.com:
+    sb21-z06.nodelauncher.com:
+    sb21-z0d.nodelauncher.com:
+    sb21-z0f.nodelauncher.com:
+    sb21-z10.nodelauncher.com:
+    sb22-z05.nodelauncher.com:
+    sb22-z06.nodelauncher.com:
+    sb22-z08.nodelauncher.com:
+    sb23-z07.nodelauncher.com:
+    sb24-z0b.nodelauncher.com:
+    sb24-z0c.nodelauncher.com:
+    sb24-z0d.nodelauncher.com:
+    sb24-z0e.nodelauncher.com:
+    sb24-z0f.nodelauncher.com:
+    sb24-z10.nodelauncher.com:
+    sb25-z0d.nodelauncher.com:
+    sb26-z08.nodelauncher.com:
+    sb26-z09.nodelauncher.com:
+    sb26-z0a.nodelauncher.com:
+    sb26-z0b.nodelauncher.com:
+    sb26-z0d.nodelauncher.com:
+    sb26-z10.nodelauncher.com:
+    sb27-z00.nodelauncher.com:
+    sb27-z01.nodelauncher.com:
+    sb27-z0a.nodelauncher.com:
+    sb27-z0c.nodelauncher.com:
+    sb27-z0d.nodelauncher.com:
+    sb27-z10.nodelauncher.com:
+    sb28-z10.nodelauncher.com:

@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+src=$1
+dest=$2
+
+src_name=$(lxc list -cn --format csv $src)
+dest_name=$(lxc list -cn --format csv $dest)
+
+if [[ -z $src_name ]]; then
+  echo "invalid source: $src"
+  exit
+fi
+
+if [[ -z $dest_name ]]; then
+  echo "invalid destination: $dest"
+  exit
+fi
+
+echo "Copying $src to $dest"
+
+tmpdir="/tmp/$dest_name"
+echo "back up config, wallet to $tmpdir"
+mkdir -p "$tmpdir"
+scp -o StrictHostKeyChecking=accept-new zen@$dest_name:{.zen/zen.conf,.zen/wallet.dat,secnodetracker/config/config.json} $tmpdir
+lxc config get $dest user.network-config > $tmpdir/user.network-config
+
+echo "delete existing destination $dest"
+lxc delete --force $dest
+ssh-keygen -f "/home/nladmin/.ssh/known_hosts" -R "$dest_name"
+ssh-keygen -f "/home/nladmin/.ssh/known_hosts" -R "$(dig $dest_name.nodelauncher.com +short AAAA)"
+
+echo "copy $src to $dest"
+ssh $src_name sudo systemctl disable zend
+lxc copy $src $dest
+ssh $src_name sudo systemctl enable zend
+
+echo "push config to $dest"
+lxc config set $dest user.network-config "$(cat $tmpdir/user.network-config)"
+
+echo "start $dest"
+lxc start $dest
+sleep 10
+
+echo "stop zend service on $dest"
+ssh -o StrictHostKeyChecking=accept-new $dest_name sudo systemctl stop zend
+
+echo "restore config and wallet files"
+scp -o StrictHostKeyChecking=accept-new $tmpdir/{zen.conf,wallet.dat} zen@$dest_name:.zen/
+scp $tmpdir/config.json zen@$dest_name:secnodetracker/config/
+
+echo "start zend service on $dest"
+ssh $dest_name "sudo systemctl enable zend zentracker && sudo systemctl start zend zentracker"
+
+echo "watch log on $dest to see if it starts up"
+ssh $dest_name journalctl -f

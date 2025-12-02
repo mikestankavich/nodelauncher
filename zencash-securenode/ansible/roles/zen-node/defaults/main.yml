@@ -1,0 +1,24 @@
+---
+
+supported_os_families:
+  - Linux
+
+supported_distributions:
+  - Ubuntu
+
+supported_distribution_releases:
+  - xenial
+  - artful
+  - bionic
+
+zen_daemon_user: zen
+swap_size: 4
+
+zencash_repo_url: https://zencashofficial.github.io/repo/
+zencash_repo_key_server: ha.pool.sks-keyservers.net
+zencash_repo_key_id: 219F55740BBF7A1CE368BA45FB7053CE4991B669
+
+notify_email: admin@example.com
+
+#tracker_region: na
+tracker_notify_email: admin@example.com

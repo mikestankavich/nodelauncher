@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+sudo systemctl stop zend zentracker
+sudo cp ~/znode-backups/staking.wallet.dat /home/zen/.zen/wallet.dat
+sudo chown zen:zen /home/zen/.zen/wallet.dat
+sudo systemctl start zend

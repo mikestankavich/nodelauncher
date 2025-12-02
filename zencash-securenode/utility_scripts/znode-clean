@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+backup_suffix=$(date +%s)
+
+pm2 stop 0
+sudo monit stop zend
+sleep 15
+mv .zen/wallet.dat .zen/wallet.dat.$backup_suffix
+mv secnodetracker/config/nodeid secnodetracker/config/nodeid.$backup_suffix
+mv secnodetracker/config/stakeaddr secnodetracker/config/stakeaddr.$backup_suffix
+sudo monit start zend

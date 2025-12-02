@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [ ! "$1" ]; then
+  echo Error: server host name is a required parameter
+  exit 1
+fi
+
+shorthost=$(echo $1 | cut -d. -f1)
+ssh root@$1 hostname
+echo $shorthost
+if [ "$(ssh root@$1 hostname)" != "$shorthost" ]; then
+  echo Error: unable to ssh to server $1
+  exit 1
+fi
+
+ansible-playbook -u root -i zen-inv.yml -l $1 root2nladmin.yml
+ansible-playbook -u nladmin -i zen-inv.yml -l $1 lxd-host.yml

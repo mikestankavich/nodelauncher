@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+t_address=$(zen-cli listaddresses | jq -r .[0])
+z_addr_1=$(zen-cli z_listaddresses | jq -r .[0])
+z_bal_1=$(zen-cli z_getbalance $z_addr_1)
+z_key_1=$(zen-cli z_exportkey $z_addr_1)
+if (( $(zen-cli z_listaddresses | jq -r '.|length') > 1 )); then
+  z_addr_2=$(zen-cli z_listaddresses | jq -r .[1])
+  z_key_2=$(zen-cli z_exportkey $z_addr_2)
+  z_bal_2=$(zen-cli z_getbalance $z_addr_2)
+fi
+
+cat <<YML
+$(hostname):
+  host_name: $(hostname -f)
+  ip_address: $(dig +short myip.opendns.com @resolver1.opendns.com)
+  region: $(cat /home/zen/secnodetracker/config/region)
+  t_addr: $t_address
+  t_key: $(zen-cli dumpprivkey $t_address)
+  z_addr_1: $z_addr_1
+  z_bal_1: $z_bal_1
+  z_key_1: $z_key_1
+  z_addr_2: $z_addr_2
+  z_bal_2: $z_bal_2
+  z_key_2: $z_key_2
+  email: $(cat /home/zen/secnodetracker/config/email)
+  stake_addr: $(cat /home/zen/secnodetracker/config/stakeaddr)
+  nodeid: $(cat /home/zen/secnodetracker/config/nodeid)
+YML

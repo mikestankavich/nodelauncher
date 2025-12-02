@@ -1,0 +1,15 @@
+---
+- name: Role testing
+#  hosts: all
+  hosts: zen
+  tags: role_testing
+  gather_facts: yes
+  become: yes
+  become_user: root
+  roles:
+    - role: lockdown
+      tags: lockdown
+    - role: wildcard-cert
+      tags: cert
+    - role: zen-node
+      tags: zen,tracker

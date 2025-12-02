@@ -1,0 +1,4 @@
+---
+
+lxd_init_trust_password: "REDACTED"
+lxd_init_network_port: 8443

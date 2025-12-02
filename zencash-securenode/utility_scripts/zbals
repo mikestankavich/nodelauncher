@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+addr_bals='[]'
+if [ "$USER" != "zen" ]; then
+  suzen="sudo -iu zen"
+else
+  suzen=""
+fi
+
+for addr in $($suzen zen-cli z_listaddresses | jq -r '.[]'); do 
+  addr_bals=$(echo $addr_bals | jq -c --arg addr $addr --arg bal $($suzen zen-cli z_getbalance $addr) \
+              '. + [{address: $addr, balance: $bal | tonumber}]'); 
+done; 
+
+echo $addr_bals | jq -r '. | sort_by(.balance) | reverse'

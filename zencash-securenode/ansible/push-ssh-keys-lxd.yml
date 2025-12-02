@@ -1,0 +1,13 @@
+---
+- hosts: lxd
+  gather_facts: false
+  become: yes
+  vars:
+    nladmin_key: "ssh-rsa REDACTED_SSH_PUBLIC_KEY admin@example.com"
+  tasks:
+    - name: Set authorized keys for root and nladmin users
+      authorized_key:
+        user: "{{ item }}"
+        state: present
+        key: "{{ nladmin_key }}"
+      with_items: ['root','nladmin']

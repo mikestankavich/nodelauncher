@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ ! "$1" ]; then
+  echo "Error: node host name(s) limit is a required parameter"
+  exit 1
+fi
+
+node_limit=$1.nodelauncher.com
+shift
+
+ansible zen -u zen -i zen-inv.yml -l $node_limit -a "$@"

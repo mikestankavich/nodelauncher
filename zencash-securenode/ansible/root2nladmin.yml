@@ -1,0 +1,55 @@
+---
+
+# quick one-off script to create an nladmin user to replace the root user#
+# steps to run:
+# cd platform/trunk/scm/infra/ansible
+# ansible-playbook -i <host>, -u root root2nladmin.yml
+
+- hosts: lxd:control
+  gather_facts: false
+  tasks:
+    - name: Make sure python installed
+      raw: bash -c "test -e /usr/bin/python || (apt -qy update && apt install -qy python)"
+    - name: Add nladmin user
+      user:
+        name: nladmin
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+    - name: Enable passwordless sudo for sudo group
+      lineinfile:
+        path: /etc/sudoers
+        regexp: '^%sudo\s+ALL='
+        line: "%sudo\tALL=(ALL) NOPASSWD:ALL"
+    - name: Create nladmin .ssh directory
+      file:
+        path: /home/nladmin/.ssh
+        state: directory
+        owner: nladmin
+        group: nladmin
+    - name: Find root .ssh files
+      find:
+        path:  /root/.ssh/
+      register: find_root_ssh_find
+    - name: Copy root .ssh files to nladmin .ssh
+      copy:
+        src: "{{ item.path }}"
+        dest: /home/nladmin/.ssh/
+        owner: nladmin
+        group: nladmin
+        mode: "{{ item.mode }}"
+        remote_src: yes
+      failed_when: false
+      with_items: "{{ find_root_ssh_find.files }}"
+    - name: Copy ssh keys to nladmin
+      copy:
+        src: "~/.ssh/nladmin_{{ item[0] }}"
+        dest: "{{ item[1] }}/.ssh/{{ item[0] }}"
+        owner: nladmin
+        group: nladmin
+        mode: 0600
+      with_nested:
+        - ['id_rsa', 'id_rsa.pub']
+        - ['/home/nladmin', '/root']
+#todo: add NOPASSWD to sudoers
+#todo: add disable root login in ssh

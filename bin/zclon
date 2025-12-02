@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+src=$1
+dest=$2
+
+src_name=$(lxc list -cn --format csv $src)
+dest_name=$(lxc list -cn --format csv $dest)
+
+if [[ -z $src_name ]]; then
+  echo "invalid source: $src"
+  exit
+fi
+
+if [[ ! -z $dest_name ]]; then
+  echo "destination $dest exists, aborting"
+  exit
+fi
+
+echo "Copying $src to $dest"
+lxc copy $src $dest
+dest_name=$(lxc list -cn --format csv $dest)
+if [[ -z $dest_name ]]; then
+  echo "destination doesnt exist, copy failed"
+  exit
+fi
+
+ssh-keygen -f "/home/nladmin/.ssh/known_hosts" -R "$dest_name"
+ssh-keygen -f "/home/nladmin/.ssh/known_hosts" -R "$(dig $dest_name.nodelauncher.com +short AAAA)"
+
+echo "fix $dest config IP"
+tmpdir="/tmp/$dest_name"
+mkdir -p "$tmpdir"
+lxc config get $dest user.network-config > $tmpdir/user.network-config
+# use sed to update network addresses in config
+node_number=$(echo $dest_name | grep -o '..$')
+sed -i "s/::[0-9][0-9]\//::$node_number\//" $tmpdir/user.network-config
+lxc config set $dest user.network-config "$(cat $tmpdir/user.network-config)"
+
+lxc file delete "$dest/etc/systemd/system/multi-user.target.wants/zentracker.service"
+
+echo "start $dest"
+lxc start $dest
+sleep 5
+
+# prepare jq command ahead of time to avoid quoting issues inside heredoc
+#jq_cmd="jq --arg fqdn \$(hostname -f) 'del(.secure.stakeaddr,.secure.nodeid,.super.stakeaddr,.super.nodeid)*{secure:{fqdn:\$fqdn}}' /home/zen/secnodetracker/config/config.json | sudo -u zen sponge /home/zen/secnodetracker/config/config.json"
+jq_cmd="'del(.secure.stakeaddr,.secure.nodeid,.super.stakeaddr,.super.nodeid)*{secure:{fqdn:\$fqdn}}'"
+ssh -T -o StrictHostKeyChecking=accept-new $dest_name << EOL
+jq --arg fqdn \$(hostname -f) $jq_cmd /home/zen/secnodetracker/config/config.json | sudo -u zen sponge /home/zen/secnodetracker/config/config.json
+sudo -u zen sed -i s/::[0-9][0-9]$/::$node_number/ /home/zen/.zen/zen.conf
+sudo -u zen mv /home/zen/.zen/wallet.dat /home/zen/.zen/wallet.dat.$(date -I)
+sudo systemctl enable zend
+sudo systemctl start zend
+EOL

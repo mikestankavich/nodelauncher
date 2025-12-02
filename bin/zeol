@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+fqdn=zen-eol.nodelauncher.com
+email=eol@4nl.co
+
+if [ ! $1 ]; then
+  echo Source is required
+  exit 1
+fi
+
+if [[ $1 =~ ^(.*)@ ]]; then
+  src_user=${BASH_REMATCH[1]}
+else
+  src_user='zen'
+fi
+
+src_admin_user=nladmin
+
+if [[ $1 =~ :(.*)$ ]]; then
+  src_path=${BASH_REMATCH[1]}
+else
+  src_path='.'
+fi
+
+[[ "@$1:" =~ @([^@:]*): ]] && src_host=${BASH_REMATCH[1]}
+
+# make backup directory
+if [ !  -d ~/zen-eol ]; then
+  mkdir -p ~/zen-eol
+fi
+
+# stop services
+ztc stop
+
+echo stop tracker and zend on source node $src_host
+ssh -o StrictHostKeyChecking=accept-new $src_admin_user@$src_host sudo systemctl stop zend
+
+echo copy wallet and config from source node $src_host
+mkdir -p ~/zen-eol/$src_host
+scp $src_user@$src_host:$src_path/.zen/wallet.dat \
+    $src_user@$src_host:$src_path/secnodetracker/config/config.json \
+    ~/zen-eol/$src_host/
+
+#    $src_user@$src_host:$src_path/secnodetracker/config/{config.json,nodeid,stakeaddr} \
+
+#if [ $? -ne 0 ]; then
+#    echo error nz return from source wallet and config copy
+#    ssh $src_user@$src_host ztc start
+#    exit 1
+#fi
+
+if [ ! -f ~/zen-eol/$src_host/config.json ]; then
+  nid=$(cat ~/zen-eol/$src_host/nodeid)
+  stk=$(cat ~/zen-eol/$src_host/stakeaddr)
+  cfg=$(jq -n --arg nid $nid --arg stk $stk '{active:"secure",secure:{home:"ts2.eu",nodeid:$nid,stakeaddr:$stk}}')
+  jq --argjson cfg "$cfg" '. * $cfg' ~/zen-eol/base/config.json > ~/zen-eol/$src_host/config.json
+fi
+
+echo copy wallet and config from $src_host to local config
+sudo cp ~/zen-eol/$src_host/wallet.dat /home/zen/.zen/ 
+cfg=$(jq -n --arg e "$email" --arg n "$fqdn" '{secure:{email:$e,fqdn:$n},super:{email:$e,fqdn:$n}}')
+jq --argjson cfg "$cfg" '. * $cfg' ~/zen-eol/$src_host/config.json > ~/zen-eol/$src_host/config.json.eol
+sudo cp ~/zen-eol/$src_host/config.json.eol /home/zen/secnodetracker/config/config.json
+sudo chown zen:zen /home/zen/.zen/wallet.dat
+sudo chown zen:zen /home/zen/secnodetracker/config/config.json
+
+echo start tracker service to trigger update to tracker system
+ztc --wait start
+
+until zu zen-cli z_gettotalbalance; do
+  sleep 3
+done
+
+# remove stake
+sudo -u zen -H zd
+
+# sleep here a bit to be sure ?
+#ztc --wait stop
+
+#echo copy previous wallet and config from snapshot to local config
+#sudo cp ~/zen-eol/snap/wallet.dat /home/zen/.zen/
+#sudo cp ~/zen-eol/snap/config.json /home/zen/secnodetracker/config/
+#sudo chown zen:zen /home/zen/.zen/wallet.dat
+#sudo chown zen:zen /home/zen/secnodetracker/config/config.json
+
+#echo start zend and tracker
+#ztc start
+# maybe --wait, or no?
+
+# push cleanup commands to node via ssh
+ren_ts=$(date --iso-8601=second)
+ssh -o StrictHostKeyChecking=accept-new $src_admin_user@$src_host << CMD
+# rename wallet.dat file so that new wallet will be created when zend starts
+zu mv .zen/wallet.dat .zen/wallet.dat.$ren_ts
+# rename config.json file before removing previous node details
+zu mv secnodetracker/config/config.json secnodetracker/config/config.json.$ren_ts
+# remove previous node details from config.json
+zu bash -c "jq 'del(.secure.nodeid,.secure.stakeaddr,.super.nodeid,.super.stakeaddr)' secnodetracker/config/config.json.$ren_ts > secnodetracker/config/config.json"
+# disable tracker service because it will just error out until there's a stake address
+sudo systemctl disable zentracker
+# start zend so that the blockchain will stay current until we reuse the node
+sudo systemctl start zend
+CMD

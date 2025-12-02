@@ -1,0 +1,43 @@
+---
+
+- name: Add zen ubuntu repo key
+  apt_key:
+      keyserver: "{{ zencash_repo_key_server }}"
+      id: "{{ zencash_repo_key_id }}"
+
+- name: Add zen ubuntu repo
+  apt_repository:
+    repo: deb {{ zencash_repo_url }} {{ ansible_distribution_release }} main
+  register: add_zen_repo
+
+# todo: dump this if no longer needed (hopefully)
+#  when: ansible_distribution_release not in ['bionic']
+#
+#- name: Add zen ubuntu repo
+#  apt_repository:
+#    repo: deb {{ zencash_repo_url }} artful main
+#  register: add_zen_repo
+#  when: ansible_distribution_release in ['bionic']
+
+- name: Update apt cache if repo added
+  apt:
+    update_cache: yes
+  when: add_zen_repo.changed
+
+- name: Update operating system patches
+  apt:
+    cache_valid_time: 3600
+    update_cache: yes
+    upgrade: dist
+
+- name: Install required packages
+  apt:
+    name:
+      - pwgen
+      - apt-transport-https
+      - lsb-release
+      - socat
+      - npm
+      - zen
+      - python-pexpect
+      - jq

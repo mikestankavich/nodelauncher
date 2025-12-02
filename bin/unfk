@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# clone specified node from baseline node z10 
+
+host=$1
+tgt=$2
+
+workdir=$(mktemp -d)
+mkdir -p "$workdir"
+
+echo copy config files to working directory
+lxc file pull "$host:$tgt/home/zen/secnodetracker/config/config.json" "$workdir/"
+
+jq 'del(.secure.stakeaddr,.secure.nodeid,.secure.category)' "$workdir/config.json" |
+  jq 'del(.super.stakeaddr,.super.nodeid,.super.category)' |
+  sponge "$workdir/config.json"
+
+lxc file push "$workdir/config.json" "$host:$tgt/home/zen/secnodetracker/config/"
+
+lxc exec "$host:$tgt" -- chown zen:zen /home/zen/{.zen/zen.conf,secnodetracker/config/config.json}
+lxc exec "$host:$tgt" -- ls -al /home/zen/secnodetracker/config/config.json
+lxc exec "$host:$tgt" -- cat /home/zen/secnodetracker/config/config.json

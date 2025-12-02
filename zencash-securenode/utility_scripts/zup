@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+
+if [ ! $1 ]; then
+  echo Source is required
+  exit 1
+fi
+
+if [[ $1 =~ ^(.*)@ ]]; then
+  src_user=${BASH_REMATCH[1]}
+else
+  src_user='zen'
+fi
+
+if [[ $1 =~ :(.*)$ ]]; then
+  src_path=${BASH_REMATCH[1]}
+else
+  src_path='.'
+fi
+
+[[ "@$1:" =~ @([^@:]*): ]] && src_host=${BASH_REMATCH[1]}
+
+
+if [ ! $2 ]; then
+  echo Destination is required
+  exit 1
+fi
+
+if [[ $2 =~ ^(.*)@ ]]; then
+  dest_user=${BASH_REMATCH[1]}
+else
+  dest_user='zen'
+fi
+
+if [[ $2 =~ :(.*)$ ]]; then
+  dest_path=${BASH_REMATCH[1]}
+else
+  dest_path='~'
+fi
+
+[[ "@$2:" =~ @([^@:]*): ]] && dest_host=${BASH_REMATCH[1]}
+
+
+# echo "src: $1, src_user: $src_user, src_host: $src_host, src_path: $src_path"
+
+migrate_tmp_dir="zmoves/$src_host-$dest_host.$(date '+%F.%T')"
+mkdir -p $migrate_tmp_dir/src $migrate_tmp_dir/dest
+
+# push fqdn - probably doesn't belong here...
+# ssh $dest_user@$dest_host bash -c "echo -n $(hostname -f) > $dest_zen_home/secnodetracker/config/fqdn"
+
+# stop tracker and zend on source and dest nodes
+ssh -o StrictHostKeyChecking=accept-new $src_user@$src_host znctl stop
+ssh -o StrictHostKeyChecking=accept-new $dest_user@$dest_host ztc stop
+
+# copy wallet and config from source node
+scp $src_user@$src_host:$src_path/.zen/wallet.dat $src_user@$src_host:$src_path/secnodetracker/config/* $migrate_tmp_dir/src
+if [ $? -ne 0 ]; then
+    echo error nz return from source wallet and config copy
+    ssh $src_user@$src_host znctl start
+    exit 1
+fi
+
+# copy wallet and config from destination node (backup)
+scp $dest_user@$dest_host:$dest_path/.zen/wallet.dat $dest_user@$dest_host:$dest_path/secnodetracker/config/* $migrate_tmp_dir/dest
+if [ $? -ne 0 ]; then
+    echo error nz return from destination wallet and config backup
+    ssh $src_user@$src_host znctl start
+    exit 1
+fi
+
+scp $migrate_tmp_dir/src/wallet.dat $dest_user@$dest_host:$dest_path/.zen/
+if [ $? -ne 0 ]; then
+    echo error nz return from destination wallet copy
+    ssh $src_user@$src_host znctl start
+    exit 1
+fi
+
+sleep 2
+
+cfg_json=$(jq -n --arg nodeid "$(cat $migrate_tmp_dir/src/nodeid)" \
+  --arg stakeaddr "$(cat $migrate_tmp_dir/src/stakeaddr)" \
+  '{nodeid: $nodeid, stakeaddr: $stakeaddr}')
+
+jq --argjson j "$cfg_json" .
+
+ssh $dest_user@$dest_host ztc config "$cfg_json"
+
+sleep 2
+
+# start tracker and zend on dest node
+ssh $dest_user@$dest_host ztc start
+
+#ssh $dest_user@$dest_host cat $dest_path/secnodetracker/config/home
+#echo " "
+#ssh $dest_user@$dest_host cat $dest_path/secnodetracker/config/nodeid
+#echo " "
+
+sleep 7
+ssh $dest_user@$dest_host journalctl -fu zentracker
+echo done
+
+ssh nladmin@znode45 sudo reboot
+ssh nladmin@zen-a4u sudo reboot
+ssh nladmin@zen-a6e sudo reboot
+ssh nladmin@zen-a7e sudo reboot
+ssh nladmin@zen-a6j sudo reboot
+ssh nladmin@zen-a6q sudo reboot
+ssh nladmin@zen-a7v sudo reboot
+ssh nladmin@zen-a8d sudo reboot
+ssh nladmin@zen-a7s sudo reboot
+ssh nladmin@zen-a7t sudo reboot
+ssh nladmin@zen-a7u sudo reboot
+ssh nladmin@zen-a7z sudo reboot
+ssh nladmin@zen-a7x sudo reboot
+ssh nladmin@zen-a8f sudo reboot
+ssh nladmin@zen-a9t sudo reboot
+ssh nladmin@zen-a8g sudo reboot
+ssh nladmin@zen-b0x sudo reboot
+ssh nladmin@zen-b0b sudo reboot
+ssh nladmin@zen-b04 sudo reboot
+ssh nladmin@zen-b07 sudo reboot
+ssh nladmin@zen-b02 sudo reboot
+ssh nladmin@zen-b0c sudo reboot
+ssh nladmin@zen-b1t sudo reboot

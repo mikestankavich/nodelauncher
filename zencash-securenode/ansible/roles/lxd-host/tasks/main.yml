@@ -1,0 +1,255 @@
+---
+
+- name: Run apt full-upgrade to bring all packages up to date
+  apt:
+    upgrade: full
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install required apt packages
+  apt:
+    cache_valid_time: 3600
+    name:
+      - zfsutils-linux
+      - bridge-utils
+      - ndppd
+      - parted
+      - snapd
+
+- name: Install required snap packages
+  snap:
+    name:
+      - lxd
+
+- name: Set up ipv6 bridge with NetworkManager (OVH)
+  include_tasks: ipv6_bridge_ovh.yml
+  when: "'ovh_lxd' in group_names"
+
+- name: Set up ipv6 bridge with netplan (Hetzner)
+  include_tasks: ipv6_bridge_hetzner.yml
+  when: "'hetzner_lxd' in group_names"
+
+- name: Discover partitions
+  parted:
+    device: " {{ item }}"
+    unit: s
+  register: disk_partition_info
+  with_items: "{{ server_disk_devices }}"
+
+- name: calculate swap size in sectors
+  set_fact:
+    swap_sectors: "{{ 2048 * 1024 * swap_size | default(32) }}"
+
+- name: Create swap partitions
+  parted:
+    device: "{{ item.item }}"
+    part_type: primary
+    number: 3
+    state: present
+    unit: s
+    part_start: "{{ item.partitions[1].end + 1  }}s"
+    part_end: "{{ item.partitions[1].end + swap_sectors | int }}s"
+  with_items: "{{ disk_partition_info.results }}"
+  when: item.partitions | length < 3
+  register: create_swap_partitions
+
+- name: Set swap partition types to '82' (Swap)
+  command: "sfdisk --part-type {{ item.item.item }} 3 82"
+  with_items: "{{ create_swap_partitions.results | selectattr('changed') | list }}"
+  register: set_swap_partition_type
+  when: create_swap_partitions is changed
+  failed_when: set_swap_partition_type.rc not in [0,1]
+
+- name: Create zfs partitions
+  parted:
+    device: "{{ item.item }}"
+    part_type: primary
+    number: 4
+    state: present
+    unit: s
+    part_start: "{{ item.partitions[1].end + swap_sectors | int + 1 }}s"
+    part_end: "{{ [item.disk.size - 1, 4294967295] | min }}s"
+  with_items: "{{ disk_partition_info.results }}"
+  when: item.partitions | length < 4
+  register: create_zfs_partitions
+
+- name: Set zfs partition types to 'bf' (Solaris)
+  command: "sfdisk --part-type {{ item.item.item }} 4 bf"
+  with_items: "{{ create_zfs_partitions.results | selectattr('changed') | list }}"
+  when: create_zfs_partitions is changed
+  register: set_zfs_partition_type
+  failed_when: set_zfs_partition_type.rc not in [0,1]
+
+- name: Reload partition table if zfs partitions added
+  command: partprobe
+  when: set_swap_partition_type is changed or set_zfs_partition_type is changed
+
+- name: Parse swap and zfs partition names from facts
+  set_fact:
+    swap_partitions: "{{ swap_partitions | default([]) | union(['/dev/' + ansible_devices[item.split('/') | last].partitions.keys() | first | regex_replace('[1-4]$','3')]) }}"
+    zfs_partitions: "{{ zfs_partitions | default([]) | union(['/dev/' + ansible_devices[item.split('/') | last].partitions.keys() | first | regex_replace('[1-4]$','4')]) }}"
+  with_items: "{{ server_disk_devices }}"
+
+- name: Create swap fs on "{{ item }}"
+  shell: "mkswap {{ item }}"
+  when: set_swap_partition_type is changed
+  with_items: "{{ swap_partitions }}"
+
+- name: Activate swap
+  shell: "swapon {{ swap_partitions | join(' ') }}"
+  when: set_swap_partition_type is changed
+
+- name: Add swapfile to /etc/fstab
+  mount:
+    name: none
+    src: "{{ item }}"
+    fstype: swap
+    opts: sw
+    passno: 0
+    dump: 0
+    state: present
+  with_items: "{{ swap_partitions }}"
+
+- name: Get list of zpools
+  command: zpool list
+  changed_when: false
+  register: get_zpool_list
+
+- name: Create zpool
+  command: "zpool create -f {{ lxd_init_storage_pool }} {{
+              'raidz1' if server_disk_devices | length > 2 else 'mirror'
+            }} {{ zfs_partitions | join(' ') }}"
+  when: server_disk_devices is defined and lxd_init_storage_pool not in get_zpool_list.stdout
+
+- name: Get list of zpools again to pick up create
+  command: zpool list
+  changed_when: false
+  register: get_zpool_list
+  tags: wip
+
+- name: Check to see if lxd init has been run
+  command: lxc config show
+  register: lxd_check_init
+  changed_when: false
+  tags: wip
+
+#- name: Check for storage configuration
+#  fail:
+#    msg: "zpool not detected and lxd_init_storage_create_loop not set"
+#  when: "lxd_check_init.stdout == 'config: {}'
+#         and lxd_init_storage_pool not in get_zpool_list.stdout
+#         and lxd_init_storage_create_device is not defined
+#         and lxd_init_storage_create_loop is not defined"
+
+#- name: Build lxd init command line from config vars
+#  set_fact:
+#    lxd_init_cmd: "{{ lxd_init_cmd | default('lxd init --auto ') }}
+#                   --{{ item | replace('lxd_init_', '') | replace('_', '-') }}
+#                   {{ vars[item] | string | quote }}"
+#  with_items: "{{ vars | select('search', '^lxd_init_') | list }}"
+#  when: "vars[item] and lxd_check_init.stdout == 'config: {}'"
+#  tags: init
+#
+#- name: Initialize lxd settings
+#  command: "{{ lxd_init_cmd }}"
+#  when: lxd_init_cmd is defined
+#  register: lxd_init_result
+#
+#- name: Be sure trust password gets set
+#  command: "lxc config set core.trust_password {{ lxd_init_trust_password | quote }}"
+
+- name: Template lxd settings
+  template:
+    src: templates/lxd-init.yml.j2
+    dest: /tmp/lxd-init.yml
+  when: "lxd_check_init.stdout == 'config: {}'"
+  tags: wip
+
+- name: Initialize lxd settings
+  shell: "lxd init --preseed < /tmp/lxd-init.yml"
+  when: "lxd_check_init.stdout == 'config: {}'"
+  register: lxd_init_result
+
+# todo: template preseed, lxd init --preseed < /tmp/lxd-init-preseed.yaml
+- name: Add nladmin user to lxd group
+  user:
+    name: nladmin
+    group: lxd
+    append: yes
+  tags: wip
+
+- name: Bump out inotify limits
+  lineinfile:
+    dest: /etc/sysctl.d/10-lxd-inotify.conf
+    create: yes
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - regexp: fs.inotify.max_queued_events
+      line: "fs.inotify.max_queued_events = 1048576"
+    - regexp: fs.inotify.max_user_instances
+      line: "fs.inotify.max_user_instances = 1048576"
+    - regexp: fs.inotify.max_user_watches
+      line: "fs.inotify.max_user_watches = 1048576"
+  notify: request_reboot
+
+- name: Clear server certificates if init ran
+  become: false
+  local_action: file state=absent path='{{ item }}'
+  when: lxd_init_result is changed
+  with_items:
+    - "terraform/servercerts/{{ ansible_hostname }}.crt"
+    - "~/.config/lxc/servercerts/{{ ansible_hostname }}.crt"
+
+# todo: add to security
+# when 'servers' in groupnames
+- name: firewall allow https for lxd
+  ufw:
+    rule: allow
+    port: "{{ lxd_init_network_port }}"
+    proto: tcp
+
+- name: firewall allow routed traffic for containers
+  ufw:
+    direction: routed
+    policy: allow
+  tags: fw
+
+# todo: break local remote add out to its own role
+- name: Check for valid local lxd remote
+  become: no
+  local_action: "shell lxc info {{ ansible_hostname}}: | yq r - auth || true"
+  register: local_lxc_remote
+  changed_when: false
+  tags: remote
+
+- name: Check for invalid local lxd remote
+  become: no
+  local_action: "command lxc remote list --format csv"
+  register: local_lxc_remote_list
+  changed_when: false
+  when: local_lxc_remote.stdout != 'trusted'
+  tags: remote
+
+- name: Remove invalid lxd remote for {{ ansible_hostname }} to local/control system
+  become: no
+  local_action: command lxc remote remove {{ ansible_hostname }}
+  when:
+    - local_lxc_remote.stdout != 'trusted'
+    - local_lxc_remote_list.stdout_lines | select('search', '^' + ansible_hostname + ',') | list
+  tags: remote
+
+- name: Add lxd remote for {{ ansible_hostname }} to local/control system
+  become: no
+  local_action: command lxc remote add {{ ansible_hostname }} https://{{ ansible_fqdn }}:{{ lxd_init_network_port }} --accept-certificate --password={{ lxd_init_trust_password | quote }}
+  when: local_lxc_remote.stdout != 'trusted'
+  tags: remote
+
+# todo: use cert auth instead of trust password?
+
+- name: Check if reboot required
+  stat:
+    path: /var/run/reboot-required
+  register: check_reboot
+  changed_when: check_reboot.stat.exists
+  notify: request_reboot

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+if [ ! $1 ]; then
+  echo Migration source is required
+  exit 1
+fi
+src_host=$1
+
+if [ $2 ]; then
+  src_zen_home=$2
+else
+  # echo Zen home directory required
+  src_zen_home=/home/zen
+fi
+
+if [ $3 ]; then
+  dest_zen_home=$3
+else
+  dest_zen_home=$src_zen_home
+fi
+
+backup_suffix=$(date +%s)
+migrate_tmp_dir=/tmp/zen-migrate.$backup_suffix
+mkdir -p $migrate_tmp_dir
+
+# copy wallet and config from source node
+scp $src_host:$src_zen_home/.zen/wallet.dat $src_host:$src_zen_home/secnodetracker/config/* $migrate_tmp_dir/
+if [ $? -ne 0 ]; then
+    echo error nz return from wallet and configcopy
+    exit 1
+fi
+sudo chown zen:zen $migrate_tmp_dir/*
+
+# run zen user script
+sudo -iu zen /home/nladmin/zmigu "$backup_suffix"
+
+# stop tracker on source 
+ssh -o BatchMode=yes $src_host pm2 stop 0
+
+sudo -iu zen pm2 log 0

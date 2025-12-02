@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+tgt_lxc="hf1:z$1"
+tgt_ssh="hf1-z$1"
+
+echo fix target network config
+net_cfg=$(lxc config get "$tgt_lxc" user.network-config | sed 's/gateway6:.*$/gateway6: 2a01:4f9:4a:5501::2/')
+lxc config set "$tgt_lxc" user.network-config "$net_cfg"
+ssh -t $tgt_ssh "printf \"%s\n\" ',s/gateway6:.*$/gateway6: 2a01:4f9:4a:5501::2/' wq | sudo ed -s /etc/netplan/50-cloud-init.yaml"
+lxc restart $tgt_lxc

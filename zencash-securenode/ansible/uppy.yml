@@ -1,0 +1,16 @@
+---
+- hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+  - apt:
+      package: zen
+      state: latest
+      update_cache: yes
+  - copy:
+      src: ~/cert2021/nodelauncher.com.cer
+      dest: /etc/ssl/local/nodelauncher.com.cer
+  - copy:
+      src: ~/cert2021/nodelauncher.com.key
+      dest: /etc/ssl/local/nodelauncher.com.key
+  - reboot:

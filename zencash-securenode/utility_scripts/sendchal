@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+tracker_home=~/secnodetracker
+tracker_host=securenodes$(cat $tracker_home/config/home | sed s/^ts1/ts/ | sed s/^ts//).zensystem.io
+chal_addr=$(zen-cli listaddresses | jq -r '.[0]')
+node_id=$(cat $tracker_home/config/nodeid)
+chal_url=https://$tracker_host/$chal_addr/$node_id/send
+echo Requesting challenge via $chal_url
+curl -O $chal_url

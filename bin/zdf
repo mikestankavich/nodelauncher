@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd ~/zencash-securenode/ansible
+./oog lxd 'df -h' -m shell -u nladmin | grep z11 | sort

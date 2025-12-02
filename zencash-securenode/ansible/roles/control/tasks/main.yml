@@ -1,0 +1,37 @@
+---
+
+- name: Install Docker Compose
+  package:
+    name: docker-compose
+    state: latest
+
+- name: Install LXD client
+  package:
+    name: lxd-client
+    state: latest
+
+- name: List host lxd remotes
+  command: lxc remote list
+  become: false
+  register: server_lxd_remotes
+  failed_when: false
+  changed_when: false
+  tags: remote
+
+- name: Parse host lxd remotes
+  set_fact:
+    server_lxd_remote_names: "{{ server_lxd_remotes.stdout_lines | select('match', '[|]') |
+             map('regex_replace', '\\s+[|].*$', '') | map('regex_replace', '^[|]\\s+', '') |
+             reject('equalto', 'NAME') | list }}"
+  tags: remote
+- debug: var=server_lxd_remotes
+  tags: remote
+#- debug: var=server_lxd_remote_names
+#  tags: remote
+#- debug: var=groups['lxd']
+#  tags: remote
+- name: Add lxd remotes for container servers
+  command: lxc remote add {{ item }} https://{{ groups['lxd'] | select('search', '^'+item + '[.]') | first }}:{{ lxd_init_network_port }} --accept-certificate --password={{ lxd_init_trust_password | quote }}
+  become: false
+  with_items: "{{ groups['lxd'] | map('regex_replace', '[.].*$', '') | list | difference(server_lxd_remote_names) }}"
+  tags: remote

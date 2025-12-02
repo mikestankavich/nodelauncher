@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+node=$1
+stake=$2
+
+# todo: check for challenge balance(s)
+if [[ -z "$(ssh zen@$node zen-cli z_gettotalbalance)" ]]; then
+  echo "invalid node: $node"
+  exit
+fi
+
+# todo: check tracker for already running node
+
+if [[ -z $stake ]]; then
+  echo "no stake addr"
+  exit
+fi
+
+cfg=$(ssh -o StrictHostKeyChecking=accept-new zen@$node cat secnodetracker/config/config.json | \
+      jq --arg stake $stake '. * {secure:{stakeaddr:$stake}}')
+
+#"jq --arg stake $stake '. * {secure:{stakeaddr:$stake}}' secnodetracker/config/config.json | sponge secnodetracker/config/config.json"
+ssh -T -o StrictHostKeyChecking=accept-new zen@$node << EOL
+#cat << EOL
+echo '$cfg' > secnodetracker/config/config.json
+#cat secnodetracker/config/config.json
+sudo systemctl enable zentracker
+sudo systemctl restart zentracker
+journalctl -f
+jq '.secure.nodeid' secnodetracker/config/config.json
+EOL

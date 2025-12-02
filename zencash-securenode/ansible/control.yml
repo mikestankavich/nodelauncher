@@ -1,0 +1,37 @@
+---
+- name: Build NodeLauncher control node
+  hosts: control
+  tags: control
+  gather_facts: yes
+  become: yes
+  become_user: root
+  roles:
+    - role: lockdown
+      tags: lockdown
+# commenting out postgres and powerdns for now since Ed is thinking to dockerize
+#    - role: ANXS.postgresql
+#      tags: pgsql
+#      vars:
+#        #### ANXS.postgresql
+#        postgresql_version: 11
+#        postgresql_apt_repository: "deb http://apt.postgresql.org/pub/repos/apt/ zesty  -pgdg main 11"
+#        postgresql_databases:
+#          - name: nodelauncher
+#        postgresql_pg_hba_passwd_hosts: ["0.0.0.0/0"]
+#        postgresql_listen_addresses: ["*"]
+#        # have to add on GSS auth here so it appears in the conf before password
+#        # should probably fix on the galaxy role but all in good time on that
+#        postgresql_pg_hba_default:
+#          - { type: local, database: all, user: '{{ postgresql_admin_user }}', address: '', method: '{{ postgresql_default_auth_method }}', comment: '' }
+#          - { type: local, database: all, user: all, address: '',             method: '{{ postgresql_default_auth_method }}', comment: '"local" is for Unix domain socket connections only' }
+#          - { type: host,  database: all, user: all, address: '127.0.0.1/32', method: '{{ postgresql_default_auth_method }}', comment: 'IPv4 local connections:' }
+#          - { type: host,  database: all, user: all, address: '::1/128',      method: '{{ postgresql_default_auth_method }}', comment: 'IPv6 local connections:' }
+#          - { type: host,  database: all, user: all, address: '0.0.0.0/0',      method: 'gss include_realm=1 map=pg-kerb', comment: 'IPA and AD SSO' }
+#    - role: PowerDNS.pdns
+#      tags: pdns
+    - role: control
+      tags: control
+    - role: wildcard-cert
+      tags: cert
+    - role: zen-node
+      tags: zen,tracker

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# rm -rf /var/lib/cloud
+# rm /etc/netplan/50-cloud-init.yaml
+
+rm /home/zen/.zen/wallet.dat
+rm /home/zen/secnodetracker/config/config.json

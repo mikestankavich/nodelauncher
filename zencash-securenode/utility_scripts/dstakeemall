@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+remote="sb21 sb22 sb23 sb24 sb25 sb26 sb27 sb28"
+for remote in $remote; do
+#for remote in $(lxc remote list | grep -o "sb2[0-9]"); do
+  echo Looking up nodes for $remote ...
+  for node in $(lxc list $remote:  | grep -o "sb2[0-9]-z[01]."); do
+    ./dstake $node
+  done
+done
+

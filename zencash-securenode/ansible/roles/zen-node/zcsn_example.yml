@@ -1,0 +1,10 @@
+---
+- name: Role testing
+  hosts: all
+  tags: role_testing
+  gather_facts: yes
+  become: yes
+  become_user: root
+  roles:
+    - role: ../zencash-securenode
+      tags: role_dev

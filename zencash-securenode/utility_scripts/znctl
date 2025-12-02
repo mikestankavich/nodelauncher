@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+
+# todo: Check for inotifywait, prompt if not installed
+# todo: abstract zen home path rather than assume it's relative to pwd 
+# todo: abstract daemon handler - systemd, monit, ???
+# todo: check if services are already stopped or started
+
+
+function chal_send() {
+  tracker_home=~/secnodetracker 
+  tracker_host=securenodes$(cat $tracker_home/config/home | sed s/^ts1/ts/ | sed s/^ts//).zensystem.io
+  chal_addr=$(zen-cli listaddresses | jq -r '.[0]')
+  node_id=$(cat $tracker_home/config/nodeid)
+  chal_url=https://$tracker_host/$chal_addr/$node_id/send
+  if tail -n4 .pm2/logs/secnodetracker-out-0.log | grep "Elapsed challenge time"; then
+    echo Challenge already running
+  else
+    echo Requesting challenge via $chal_url
+    curl -O $chal_url
+  fi
+}
+
+function chal_wait() {
+  echo Waiting for challenge to run...
+  while inotifywait -qq -e modify .pm2/logs/secnodetracker-out-0.log; do
+    tail -n1 .pm2/logs/secnodetracker-out-0.log
+    if tail -n5 .pm2/logs/secnodetracker-out-0.log | grep "Challenge"; then
+      break
+    fi
+  done
+  echo "Done waiting for challenge!"
+}
+
+function check_zend() {
+  if [ -f .zen/zend.pid ]; then
+    zend_pid=$(< .zen/zend.pid)
+  else
+    zend_pid='pid file not found'
+  fi
+  # rc = 0 if found, 1 if not
+  ps ax | grep "$zend_pid.*zend$" 
+}
+
+function stop_tracker() {
+  pm2 -s stop 0
+}
+
+function stop_zend() {
+  sudo monit stop zend
+  echo Waiting for zend to stop...
+  while inotifywait -qq -e modify .zen/debug.log; do
+    if tail -n3 .zen/debug.log | grep "Shutdown: done"; then
+      break
+    fi
+  done
+  echo zend stopped!
+}
+
+function start_zend() {
+  # todo: see if running already
+  sudo monit start zend
+  echo Waiting for zend to start...
+  while inotifywait -qq -e modify .zen/debug.log; do
+    started=$(tail -n10 .zen/debug.log | grep "Done loading")
+    #if tail -n10 .zen/debug.log | grep "Done loading"; then
+    if [ -n "$started" ]; then
+      echo "$started"
+      break
+    fi
+  done
+
+  while inotifywait -qq -e modify .zen/debug.log; do
+    peercount=$(grep -A1000 "$started" .zen/debug.log | grep "TLS: connection to .* has been established" | wc -l)
+    echo "Waiting for zend to connect to peers: $peercount connected..."
+    if [ $peercount -ge 8 ]; then
+      break
+    fi
+  done
+  echo "zend started and ready!"
+
+}
+
+function start_tracker() {
+  # abstract process handler - systemd, pm2, ???
+  pm2 -s start 0
+}
+
+if [[ ! $1 =~ ^(stop|start|restart|challenge|chal|req_chal)$ ]]; then
+    echo "Action required: stop | start | restart | challenge | req_chal"
+    exit 1
+fi
+
+case $1 in
+stop)
+  stop_tracker
+  check_zend
+  if [ $? -eq 0 ]; then
+      stop_zend
+  fi
+  ;;
+start)
+  check_zend
+  if [ $? -ne 0 ]; then
+      start_zend
+  fi
+  start_tracker
+  ;;
+restart)
+  stop_tracker
+  check_zend
+  if [ $? -eq 0 ]; then
+      stop_zend
+  fi
+  start_zend
+  start_tracker
+  ;;
+challenge)
+  chal_send
+  chal_wait
+  ;;
+req_chal)
+  chal_send
+  ;;
+esac
+

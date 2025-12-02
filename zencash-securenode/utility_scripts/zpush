@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+for remote in $(lxc remote list | grep -o "s[bgr][01][0-9] "); do
+  echo $remote start
+#  ansible $remote -u nladmin -b -i ../ansible/zen-inv.yml -m copy -a 'src=znctl dest=/usr/local/bin/ owner=root group=root mode=0755'
+  ansible $remote -u nladmin -b -i ../ansible/zen-inv.yml -m apt -a 'name=inotify-tools'
+  echo $remote finish
+done

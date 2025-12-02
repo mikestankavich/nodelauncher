@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+
+# todo: maybe use journalctl --since "2015-06-26 23:15:00"
+
+function chal_send() {
+  tracker_home=~/secnodetracker 
+  tracker_host=securenodes$(cat $tracker_home/config/home | sed s/^ts1/ts/ | sed s/^ts//).zensystem.io
+  chal_addr=$(zen-cli listaddresses | jq -r '.[0]')
+  node_id=$(cat $tracker_home/config/nodeid)
+  chal_url=https://$tracker_host/$chal_addr/$node_id/send
+  if journalctl -u zentracker | grep "Elapsed challenge time"; then
+    echo Challenge already running
+  else
+    echo Requesting challenge via $chal_url
+    curl -O $chal_url
+  fi
+}
+
+function chal_wait() {
+  chal_send
+  echo Waiting for challenge to run...
+  while [ 1 -eq 1 ]; do
+    if journalctl -u zentracker | grep "Challenge"; then
+      break
+    fi
+  done
+  echo "Done waiting for challenge!"
+}
+
+function check_zend() {
+  if [ -f .zen/zend.pid ]; then
+    zend_pid=$(< .zen/zend.pid)
+  else
+    zend_pid='pid file not found'
+  fi
+  # rc = 0 if found, 1 if not
+  ps ax | grep "$zend_pid.*zend$" 
+}
+
+function stop_tracker() {
+  sudo systemctl stop zentracker
+}
+
+function stop_zend() {
+  sudo systemctl stop zend
+  echo Waiting for zend to stop...
+  while [ 1 -eq 1 ]; do
+    if journalctl -u zend | grep "Shutdown: done"; then
+      break
+    fi
+    sleep 1
+  done
+  echo zend stopped!
+}
+
+function start_zend() {
+  sudo systemctl start zend
+  while [ 1 -eq 1 ]; do
+    if [ $(zen-cli | jq -r '.connections') -eq 8 ] ; then
+      break
+    else
+      sleep 1
+    fi
+  done
+  echo zend started!
+}
+
+function start_tracker() {
+  sudo systemctl start zentracker
+}
+
+if [[ ! $1 =~ ^(stop|start|restart|challenge|chal|req_chal)$ ]]; then
+    echo "Action required: stop | start | restart | challenge | req_chal"
+    exit 1
+fi
+
+case $1 in
+stop)
+  stop_tracker
+  check_zend
+  if [ $? -eq 0 ]; then
+      stop_zend
+  fi
+  ;;
+start)
+  check_zend
+  if [ $? -ne 0 ]; then
+      start_zend
+  fi
+  start_tracker
+  ;;
+restart)
+  stop_tracker
+  check_zend
+  if [ $? -eq 0 ]; then
+      stop_zend
+  fi
+  start_zend
+  start_tracker
+  ;;
+challenge)
+  chal_send
+  chal_wait
+  ;;
+req_chal)
+  chal_send
+  ;;
+esac
+

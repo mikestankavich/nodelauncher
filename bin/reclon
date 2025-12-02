@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+
+# re-clone specified node from baseline node z10 to recover disk space
+
+##### RED ALERT change this back to z10
+
+if [[ -z "$2" ]]; then
+  tgt_host="hf1"
+  tgt_node=$1
+else
+  tgt_host=$1
+  tgt_node=$2
+fi
+
+if [[ "$tgt_host" == "hf1" ]]; then
+  src_node=z10
+fi
+if [[ "$tgt_host" == "hf2" ]]; then
+  src_node=z11
+fi
+
+# todo: validate target node in znn(n)
+
+src_snap=$(lxc info $tgt_host:$src_node | grep -o 'base[-0-9]*' | tail -1)
+if [[ -z "$src_snap" ]]; then
+  echo "Could not find base snapshot for source $tgt_host:$src_node"
+  exit
+fi
+
+if [[ "$src_node" == "$tgt_node" ]]; then
+  echo Beware the footgun!
+  exit
+fi
+
+echo make a working directory
+workdir=$(mktemp -d)
+mkdir -p "$workdir"
+
+if [[ $(lxc list "$tgt_host:$tgt_node" -cn --format csv | head -1) == "$tgt_node" ]]; then
+  echo target $tgt_node exists, back it up
+  echo "stop $tgt_node"
+  lxc stop "$tgt_host:$tgt_node"
+  while lxc list "$tgt_host:$tgt_node" -cns --format csv | grep "$tgt_node,RUNNING"; do
+    echo waiting for container to stop
+    sleep 1
+  done
+
+  echo "rename $tgt_node to $tgt_node-reclon"
+  lxc rename "$tgt_host:$tgt_node" "$tgt_node-reclon" 
+
+  echo copy config and wallet files
+  lxc file pull "$tgt_host:$tgt_node-reclon/home/zen/.zen/zen.conf" "$workdir/"
+  lxc file pull "$tgt_host:$tgt_node-reclon/home/zen/.zen/wallet.dat" "$workdir/"
+  lxc file pull "$tgt_host:$tgt_node-reclon/home/zen/secnodetracker/config/config.json" "$workdir/"
+
+  echo "get $tgt_node network config"
+  net_cfg=$(lxc config get "$tgt_host:$tgt_node-reclon" user.network-config)
+
+  echo get first profile name
+  profile_name=$(lxc config show "$tgt_host:$tgt_node-reclon" | grep -A1 profiles | awk 'NR==2{print $2}')
+
+else
+  echo target $tgt_node does not exist, prep config files from source
+  lxc file pull "$tgt_host:$src_node/home/zen/.zen/zen.conf" "$workdir/"
+  lxc file pull "$tgt_host:$src_node/home/zen/secnodetracker/config/config.json" "$workdir/"
+
+  jq 'del(.secure.stakeaddr,.secure.nodeid)' "$workdir/config.json" | sponge "$workdir/config.json"
+  jq 'del(.super.stakeaddr,.super.nodeid)' "$workdir/config.json" | sponge "$workdir/config.json"
+  fqdn="$tgt_host-$tgt_node.nodelauncher.com"
+  jq --arg fqdn "$fqdn" '.secure.fqdn=$fqdn' "$workdir/config.json" | sponge "$workdir/config.json"
+  jq --arg fqdn "$fqdn" '.super.fqdn=$fqdn' "$workdir/config.json" | sponge "$workdir/config.json"
+
+  # todo: clean up so this doesnt assume 2 digit node and handles ipv4 for supernode
+  node_nbr=$(echo $tgt_node | grep -o '..$')
+  sed -i s/::10$/::$node_nbr/ "$workdir/zen.conf"
+
+  net_cfg=$(lxc config get "$tgt_host:$src_node" user.network-config | sed "s/::10\/96$/::$node_nbr\/96/")
+  profile_name=$(lxc config show "$tgt_host:$src_node" | grep -A1 profiles | awk 'NR==2{print $2}')
+fi
+
+echo "Cloning $tgt_host:$tgt_node from $tgt_host:$src_node/$src_snap"
+lxc copy "$tgt_host:$src_node/$src_snap" "$tgt_host:$tgt_node"
+
+echo push config files
+lxc file push "$workdir/zen.conf" "$tgt_host:$tgt_node/home/zen/.zen/"
+lxc file push "$workdir/config.json" "$tgt_host:$tgt_node/home/zen/secnodetracker/config/"
+if [[ -f "$workdir/wallet.dat" ]]; then
+  lxc file push "$workdir/wallet.dat" "$tgt_host:$tgt_node/home/zen/.zen/"
+else
+  lxc file delete "$tgt_host:$tgt_node/home/zen/.zen/wallet.dat"
+fi
+lxc file delete "$tgt_host:$tgt_node/etc/systemd/system/multi-user.target.wants/zend.service"
+lxc file delete "$tgt_host:$tgt_node/etc/systemd/system/multi-user.target.wants/zentracker.service"
+
+echo assign profile
+lxc profile assign "$tgt_host:$tgt_node" "$profile_name"
+
+echo push target network config
+lxc config set $tgt_host:$tgt_node user.network-config "$net_cfg"
+
+echo start node
+lxc start $tgt_host:$tgt_node
+
+echo chown config files
+until lxc exec $tgt_host:$tgt_node chown zen:zen /home/zen/secnodetracker/config/config.json; do
+  echo waiting node start
+  sleep 1
+done
+lxc exec $tgt_host:$tgt_node chown zen:zen /home/zen/.zen/zen.conf
+echo restart services
+if [[ -f "$workdir/wallet.dat" ]]; then
+  lxc exec $tgt_host:$tgt_node chown zen:zen /home/zen/.zen/wallet.dat
+  lxc exec $tgt_host:$tgt_node systemctl restart zend zentracker
+  lxc exec $tgt_host:$tgt_node systemctl enable zend zentracker
+else
+  lxc exec $tgt_host:$tgt_node systemctl restart zend
+  lxc exec $tgt_host:$tgt_node systemctl enable zend
+fi
+
+if [[ $(lxc list "$tgt_host:$tgt_node-reclon" -cn --format csv | head -1) == "$tgt_node-reclon" ]]; then
+  echo delete "$tgt_host:$tgt_node-reclon"
+  lxc delete "$tgt_host:$tgt_node-reclon"
+fi
+
+echo clean up known hosts
+ssh-keygen -R "$tgt_host-$tgt_node"
+ssh-keygen -R "$tgt_host-$tgt_node.nodelauncher.com"
+ssh-keygen -R "$(lxc list -c4 --format csv $tgt_host:$tgt_node | awk 'NR==1{print $1}')"
+ssh-keygen -R "$(lxc list -c6 --format csv $tgt_host:$tgt_node | awk 'NR==1{print $1}')"
+

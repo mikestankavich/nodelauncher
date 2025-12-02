@@ -1,0 +1,8 @@
+if [ -n "$1" ]; then
+  for box in $(lxc list --format json $1: | jq -r '.[].name'); do
+    if [ "$box" != "zen-base" ]; then
+      echo "restarting $1:$box"
+      lxc restart "$1:$box"
+    fi
+  done
+fi

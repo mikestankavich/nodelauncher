@@ -1,0 +1,23 @@
+{
+ "active": "super",
+ "super": {
+  "nodetype": "super",
+  "servers": [
+   "xns1.na",
+   "xns2.na",
+   "xns3.na",
+   "xns4.na",
+   "xns1.eu",
+   "xns2.eu",
+   "xns3.eu",
+   "xns4.eu"
+  ],
+  "stakeaddr": "zneXWiUDyn3g3ivEUG2xMB7ZC3qhU6px9AZ",
+  "email": "admin@example.com",
+  "fqdn": "sb27-z05.nodelauncher.com",
+  "ipv": "4",
+  "region": "na",
+  "home": "xns1.na",
+  "category": "customer@example.com"
+ }
+}

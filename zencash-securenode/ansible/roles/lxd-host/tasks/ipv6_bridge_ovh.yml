@@ -1,0 +1,73 @@
+---
+
+- name: Add ipv6 forwarding to sysctl
+  lineinfile:
+    path: /etc/sysctl.conf
+    regexp: net.ipv6.conf.all.forwarding
+    line: net.ipv6.conf.all.forwarding = 1
+  notify: apply_sysctl
+
+- name: Add ipv6 proxy to sysctl
+  lineinfile:
+    path: /etc/sysctl.conf
+    regexp: net.ipv6.conf.all.forwarding
+    line: net.ipv6.conf.all.proxy_ndp = 1
+    insertafter: net.ipv6.conf.all.forwarding
+  notify: apply_sysctl
+
+- name: install ifupdown, bridge-utils and ndppd
+  apt:
+    name:
+      - ifupdown
+      - bridge-utils
+
+- name: Template bridge network settings into /etc/network/interfaces
+  template:
+    src: templates/networkmanager.interfaces.j2
+    dest: /etc/network/interfaces
+  notify: request_reboot
+
+- name: Enable and start NetworkManager networking service
+  service:
+    name: networking
+    enabled: yes
+#    state: started
+  notify: request_reboot
+
+- name: Disable systemd-networkd services
+  service:
+    name: systemd-networkd
+    enabled: no
+#    state: stopped
+  notify: request_reboot
+
+- name: Disable systemd-networkd services
+  service:
+    name: systemd-networkd-wait-online
+    enabled: no
+#    state: stopped
+  notify: request_reboot
+
+- name: Disable systemd-networkd services
+  service:
+    name: networkd-dispatcher
+    enabled: no
+#    state: stopped
+  notify: request_reboot
+
+- name: Template ndppd settings into /etc/ndppd.conf
+  template:
+    src: ndppd.conf.j2  #make this template
+    dest: /etc/ndppd.conf
+  vars:
+    bridge_interface: br0
+
+- name: Enable and start ndppd service
+  service:
+    name: ndppd
+    enabled: yes
+    state: started
+
+# reboot needed?
+
+

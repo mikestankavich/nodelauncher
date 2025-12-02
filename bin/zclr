@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+src=$1
+dest=$2
+
+src_name=$(lxc list -cn --format csv $src)
+dest_name=$(lxc list -cn --format csv $dest)
+
+if [[ -z $src_name ]]; then
+  echo "invalid source: $src"
+  exit
+fi
+
+if [[ -z $dest_name ]]; then
+  echo "destination doesnt exist, copy failed"
+  exit
+fi
+
+node_number=$(echo $dest_name | grep -o '..$')
+
+# prepare jq command ahead of time to avoid quoting issues inside heredoc
+jq_cmd="jq --arg fqdn \$(hostname -f) 'del(.secure.stakeaddr,.secure.nodeid)*{secure:{fqdn:\$fqdn}}' /home/zen/secnodetracker/config/config.json | sudo -u zen sponge /home/zen/secnodetracker/config/config.json"
+# /home/zen/secnodetracker/config/config.json"
+ssh -T -o StrictHostKeyChecking=accept-new $dest_name << EOL
+$jq_cmd
+sudo -u zen sed -i s/::10[0-9][0-9]$/::10$node_number/ /home/zen/.zen/zen.conf
+rm /home/zen/.zen/wallet.dat
+sudo systemctl enable zend
+sudo systemctl start zend
+EOL
+
+# update netplan config IP
+#sed -i "s/::10[0-9][0-9]$/::10$node_number/" $tmpdir/zen.conf
+
+#echo "scrub zen configuration"
+#lxc file pull "$dest_name/home/zen/.zen/zen.conf" "$tmpdir/"
+#lxc file pull "$dest_name/home/zen/secnodetracker/config/config.json" "$tmpdir/"
+# update zen.conf hostname
+# clean config.json
+# update config.json hostname
+#sed /nodeid/d /home/zen/secnodetracker/config/config.json
+# update config.json hostname
+# remove wallet.dat
+#lxc file delete "$dest_name/home/zen/.zen/wallet.dat"
+# disable zentracker service by removing symlink
+#lxc file delete "$dest/etc/systemd/system/multi-user.target.wants/zentracker.service"
+
+#echo "start $dest"
+#lxc start $dest
+#sleep 10
+
+# fix file ownership of pushed files
+
+#echo "start zend service on $dest"
+#ssh $dest_name "sudo systemctl enable zend zentracker && sudo systemctl start zend zentracker"
+
+#echo "watch log on $dest to see if it starts up"
+#ssh $dest_name journalctl -f

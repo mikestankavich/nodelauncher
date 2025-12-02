@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+for parm in $@; do
+  if [[ $parm =~ '@' ]]; then
+    node=$parm
+  else
+    node="zen@$parm"
+  fi
+  # get balances from node
+  echo $node
+  ssh -o StrictHostKeyChecking=accept-new $node "zen-cli z_getoperationstatus" | jq -cr '.[].status'
+
+done

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# first parm = date to restore
+resto_path="$HOME/znode-backups/znode-backup-$1"
+tgt_node=$2
+fqdn="$tgt_node.nodelauncher.com"
+
+echo stop zend on target $tgt_node
+ssh -o StrictHostKeyChecking=accept-new "nladmin@$tgt_node" "sudo systemctl stop zend"
+echo push restored allet to target $tgt_node
+scp "$resto_path/$2/config.json" "zen@$tgt_node:secnodetracker/config/config.json"
+scp "$resto_path/$2/wallet.dat" "zen@$tgt_node:.zen/wallet.dat"
+echo restart tracker on target $tgt_node
+ssh "nladmin@$tgt_node" "sudo systemctl enable zentracker && ztc start --wait"

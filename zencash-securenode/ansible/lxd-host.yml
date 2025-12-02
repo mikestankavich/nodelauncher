@@ -1,0 +1,11 @@
+---
+- name: Install and configure LXD host
+  hosts: lxd
+  gather_facts: yes
+  become: yes
+  become_user: root
+  roles:
+    - role: lockdown
+      tags: lockdown
+    - role: lxd-host
+      tags: lxd

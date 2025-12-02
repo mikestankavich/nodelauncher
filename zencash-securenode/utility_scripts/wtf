@@ -1,0 +1,9 @@
+nodes=$(curl "https://securenodes2.na.zensystem.io/api/nodes/my/list?key=9cc2a0dea83d5baff4fb6fb2a3d1379251a30b6d&status=up" | jq .nodes[].id)
+
+for node in $nodes; do
+echo $node
+stk=$(curl -s "https://securenodes2.na.zensystem.io/api/nodes/$node/detail?key=9cc2a0dea83d5baff4fb6fb2a3d1379251a30b6d" | jq -r '.stkaddr')
+if [ "$stk" == "znagHGkxubSVmwbv3RSSakQvQy9bJx7cn48" ]; then
+echo found it
+fi
+done

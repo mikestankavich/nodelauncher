@@ -1,0 +1,10 @@
+{{ zen_daemon_user }} ALL=(ALL) NOPASSWD:/bin/systemctl start zend
+{{ zen_daemon_user }} ALL=(ALL) NOPASSWD:/bin/systemctl stop zend
+{{ zen_daemon_user }} ALL=(ALL) NOPASSWD:/bin/systemctl restart zend
+{{ zen_daemon_user }} ALL=(ALL) NOPASSWD:/bin/systemctl enable zend
+{{ zen_daemon_user }} ALL=(ALL) NOPASSWD:/bin/systemctl disable zend
+{{ zen_daemon_user }} ALL=(ALL) NOPASSWD:/bin/systemctl start zentracker
+{{ zen_daemon_user }} ALL=(ALL) NOPASSWD:/bin/systemctl stop zentracker
+{{ zen_daemon_user }} ALL=(ALL) NOPASSWD:/bin/systemctl restart zentracker
+{{ zen_daemon_user }} ALL=(ALL) NOPASSWD:/bin/systemctl enable zentracker
+{{ zen_daemon_user }} ALL=(ALL) NOPASSWD:/bin/systemctl disable zentracker

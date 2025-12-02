@@ -1,0 +1,25 @@
+rpcuser={{ lookup('password', '/tmp/rpcuser chars=ascii_letters,digits') }}
+rpcpassword={{ lookup('password', '/tmp/rpcpwd chars=ascii_letters,digits') }}
+rpcport=18231
+rpcallowip=127.0.0.1
+server=1
+daemon=1
+listen=1
+txindex=1
+logtimestamps=1
+### testnet config
+#testnet=1
+
+exportdir=/home/{{ zen_daemon_user }}/exp
+importdir=/home/{{ zen_daemon_user }}/exp
+
+tlscertpath=/etc/ssl/local/nodelauncher.com.cer
+tlskeypath=/etc/ssl/local/nodelauncher.com.key
+
+{% if ansible_default_ipv4.address is defined %}
+externalip={{ ansible_default_ipv4.address }}
+{% endif %}
+{% if ansible_default_ipv6.address is defined %}
+externalip={{ ansible_default_ipv6.address }}
+{% endif %}
+port=9033

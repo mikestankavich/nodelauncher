@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+zen_cli="zu zen-cli"
+
+if [[ $($zen_cli z_gettotalbalance | jq -r .transparent) == "0.00" ]]; then
+  ~/.local/bin/stakewal
+  sleep 3
+fi
+
+from_addr=$($zen_cli listaddressgroupings | \
+  jq -r '[.[][] | {address:.[0],balance:.[1]}] | sort_by(.balance) | reverse | .[0] | select(.balance > 0.01).address')
+
+if [[ -z "$from_addr" ]] ; then
+  echo No funds available in source wallet
+  exit
+fi
+
+for parm in $@; do
+  if [[ $parm =~ '@' ]]; then
+    node=$parm
+  else
+    node="zen@$parm"
+  fi
+  # get balances from node
+  node_bals=$(ssh -o StrictHostKeyChecking=accept-new $node "zbals")
+  addr_count=$(echo $node_bals | jq -r '. | length')
+  for idx in 0 1 ; do
+    if  (( idx >= addr_count)); then
+      addr_bal="{\"address\": \"$(ssh $node zen-cli z_getnewaddress)\", \"balance\": 0.0}"
+    else
+      addr_bal=$(echo "$node_bals" | jq --arg idx $idx '.[$idx | tonumber]  | select(.balance | tonumber < 0.011)')
+    fi
+    echo $parm: $addr_bal
+    bals=$(echo "$bals [$addr_bal]" | jq -s add)
+  done
+done
+
+#echo $bals
+#echo ""
+
+for tgt in 0.001 0.011; do
+  dests=$(echo $bals | jq --arg tgt $tgt '[ .[] | select(.balance | tonumber < ($tgt | tonumber)) | {address:.address,amount:0.01} ]')
+  if [ "$(echo $dests | jq -r '. | length')" != "0" ]; then
+    echo Executing $zen_cli z_sendmany $from_addr "$dests"
+    $zen_cli z_sendmany $from_addr "$dests"
+    sleep 120
+  fi
+done

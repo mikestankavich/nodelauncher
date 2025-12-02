@@ -1,0 +1,10 @@
+---
+
+supported_os_families:
+  - Linux
+
+supported_distributions:
+  - Ubuntu
+
+supported_distribution_releases:
+  - artful

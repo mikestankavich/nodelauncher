@@ -1,0 +1,40 @@
+---
+- name: Upgrade zen node tracker service
+  hosts: zen
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: populate service facts
+      service_facts:
+
+    - name: stop zentracker service
+      systemd:
+        state: stopped
+        name: zentracker
+      when:
+        - "'zentracker.service' in ansible_facts.services"
+        - ansible_facts.services['zentracker.service'].state in ['running']
+
+    - name: copy updated tracker files
+      copy:
+        src: ../nodetracker/
+        dest: /home/zen/secnodetracker/
+        owner: zen
+        group: zen
+      register: copy_tracker_files
+
+    - name: Install node modules for nodetracker
+      become: yes
+      become_user: zen
+      command: npm install
+      args:
+        chdir: /home/zen/secnodetracker
+      when: copy_tracker_files is changed
+
+    - name: Restart zentracker service
+      systemd:
+        state: started
+        name: zentracker
+      when:
+        - "'zentracker.service' in ansible_facts.services"
+        - ansible_facts.services['zentracker.service'].state in ['running']

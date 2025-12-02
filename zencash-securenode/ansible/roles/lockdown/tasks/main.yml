@@ -1,0 +1,85 @@
+---
+
+- name: Update operating system patches
+  apt:
+    cache_valid_time: 3600
+    update_cache: yes
+    upgrade: dist
+
+- name: Install required packages
+  apt:
+    name:
+    - fail2ban
+    - rkhunter
+    - ufw
+
+- name: firewall allow outgoing
+  ufw:
+    policy: allow
+    direction: outgoing
+
+- name: firewall deny incoming
+  ufw:
+    policy: deny
+    direction: incoming
+
+- name: firewall allow and rate limit ssh
+  ufw:
+    rule: limit
+    port: 22
+    proto: tcp
+#
+#- name: firewall allow http
+#  ufw:
+#    rule: allow
+#    port: 80
+#    proto: tcp
+#
+#- name: firewall allow https
+#  ufw:
+#    rule: allow
+#    port: 443
+#    proto: tcp
+#
+#- name: firewall allow zend
+#  ufw:
+#    rule: allow
+#    port: 9033
+#    proto: tcp
+
+- name: firewall log
+  ufw:
+    logging: on
+
+- name: firewall enable
+  ufw:
+    state: enabled
+
+- name: Enable and start fail2ban service
+  service:
+    name: fail2ban
+    state: started
+    enabled: yes
+
+# todo: figure out if there's a better way to detect change
+- name: Update rootkit hunter
+  command: rkhunter --propupd
+  changed_when: false
+
+
+# allow routing for lxd hosts
+#
+#down vote
+#accepted
+#I figured it out.
+#
+#Edit /etc/default/ufw and set DEFAULT_FORWARD_POLICY to ACCEPT:
+#
+#DEFAULT_FORWARD_POLICY="ACCEPT"
+
+#- name: Check if reboot required
+#  stat:
+#    path: /var/run/reboot-required
+#  register: check_reboot
+#  changed_when: check_reboot.stat.exists
+#  notify: request_reboot

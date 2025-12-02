@@ -1,0 +1,159 @@
+---
+
+- name: firewall allow http
+  ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+
+- name: firewall allow https
+  ufw:
+    rule: allow
+    port: 443
+    proto: tcp
+
+- name: firewall allow zend
+  ufw:
+    rule: allow
+    port: 9033
+    proto: tcp
+
+# todo: move to defaults
+# set up a permanent empty node as seed on sr01
+# run imaging to zen-base-latest ?daily?
+# then lxc image copy sr01:zen-base-latest new_server: --alias zen-base
+- set_fact:
+    seed_host: sb29-z0f.nodelauncher.com
+  tags: seed,chain
+
+- set_fact:
+#    seed_cmd: "rsync -e \"ssh -o StrictHostKeyChecking=accept-new\" -rv {{ zen_daemon_user }}@{{ seed_host }}:"
+    seed_cmd: "rsync -e \"ssh -o StrictHostKeyChecking=no\" -rv {{ zen_daemon_user }}@{{ seed_host }}:"
+  tags: seed,chain
+
+- name: Seed zk-SNARK parameters
+  command: "{{ seed_cmd }}~/.zcash-params /home/{{ zen_daemon_user }}/"
+#  register: seed_zk_snarks_files
+  when: seed_host is defined
+  tags: seed
+# and stat no .zcash-params
+# or changed_when output lists rsync did something
+
+# todo: cache this somewhere takes FOREVER to download
+- name: Download zk-SNARK parameters parameters with zen-fetch-params (this may take a while)
+  command: zen-fetch-params
+  args:
+    creates: /home/{{ zen_daemon_user }}/.zcash-params/sprout-proving.key
+  become_user: "{{ zen_daemon_user }}"
+  become: no
+  register: zen_params
+  tags: zen_params
+#  changed_when: zen_params.stdout_lines[-1] != "If they already exist locally, it will exit now and do nothing else."
+  changed_when: zen_params.stdout | default('') != "skipped, since /home/" + zen_daemon_user + "/.zcash-params/sprout-proving.key exists"
+
+- name: Set file ownership on files from zen-fetch-params
+  file:
+    path: /home/{{ zen_daemon_user }}/.zcash-params
+    owner: "{{ zen_daemon_user }}"
+    group: "{{ zen_daemon_user }}"
+    recurse: yes
+  tags: seed
+
+- name: Create .zen directory for user
+  file:
+    path: /home/{{ zen_daemon_user }}/.zen
+    state: directory
+    owner: "{{ zen_daemon_user }}"
+    group: "{{ zen_daemon_user }}"
+  register: create_zen_dir
+
+- name: Seed blockchain files
+  command: "{{ seed_cmd }}~/.zen/{blocks,chainstate} /home/{{ zen_daemon_user }}/.zen/"
+  register: seed_blockchain_files
+  when: seed_host is defined
+  tags: seed,chain
+#  command: rsync -e "ssh -o StrictHostKeyChecking=accept-new" -rv {{ zen_daemon_user }}@zen-b2f.nodelauncher.com:~/.zen/{blocks,chainstate} /home/{{ zen_daemon_user }}/.zen/
+#  register: seed_blockchain_files
+#  when: create_zen_dir.changed
+# should i stat for the blocks dir or first file therein
+
+- name: Set ownership and permissions
+  file:
+    path: /home/{{ zen_daemon_user }}/.zen
+    state: directory
+    owner: "{{ zen_daemon_user }}"
+    group: "{{ zen_daemon_user }}"
+    recurse: yes
+  tags: seed,chain
+#  when: create_zen_dir.changed or seed_blockchain_files.changed
+
+# sudo chown -R $USER ~/.zen/{blocks,chainstate}
+
+# todo: add TLS stuff and ??? what was that other thing?
+- name: Generate zen.conf file
+  template:
+    src: templates/zen.conf.j2
+    dest: /home/{{ zen_daemon_user }}/.zen/zen.conf
+#    force: yes
+    owner: "{{ zen_daemon_user }}"
+    group: "{{ zen_daemon_user }}"
+  notify: restart_zend
+  tags: prep
+
+#- name: Change RPC user and pass to random values
+#  replace:
+#    path: /home/{{ zen_daemon_user }}/.zen/zen.conf
+#    regexp: "{{ item.regexp }}"
+#    replace: "{{ item.replace }}"
+#  with_items:
+#    - regexp: rpcuser=rpcfoo
+##      replace: "rpcuser={{ (ansible_fqdn + 'rpcfoo') | hash('md5') }}"
+#      replace: "rpcuser={{ lookup('password', '/tmp/rpcuser chars=ascii_letters,digits') }}"
+#    - regexp: rpcpassword=rpcbar
+#      replace: "rpcpassword={{ lookup('password', '/tmp/rpcpwd chars=ascii_letters,digits') }}"
+#  notify: restart_zend
+#  tags: prep
+
+# - name: Point zen conf tls settings to letsencrypt certs
+- name: Point zen conf tls settings to nl wildcard cert
+  lineinfile:
+    dest: /home/{{ zen_daemon_user }}/.zen/zen.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - regexp: tlscertpath
+      line: "tlscertpath=/etc/ssl/local/nodelauncher.com.cer"
+#      line: "tlscertpath=/usr/local/var/acme/{{ cert_fqdn | default(ansible_fqdn) }}/{{ cert_fqdn | default(ansible_fqdn) }}.cer"
+    - regexp: tlskeypath
+      line: "tlskeypath=/etc/ssl/local/nodelauncher.com.key"
+#      line: "tlskeypath=/usr/local/var/acme/{{ cert_fqdn | default(ansible_fqdn) }}/{{ cert_fqdn | default(ansible_fqdn) }}.key"
+  notify: restart_zend
+
+- name: Copy daemon launch script with wait for journal race
+  copy:
+    src: files/zend
+    dest: /home/{{ zen_daemon_user }}/.zen/zend
+    owner: "{{ zen_daemon_user }}"
+    group: "{{ zen_daemon_user }}"
+    mode: 0755
+
+- name: Generate zen daemon service control script
+  template:
+    src: templates/zend.service.j2
+    dest:  /lib/systemd/system/zend.service
+    mode: 0644
+    owner: root
+    group: root
+  notify: restart_zend
+
+- name: Add sudoers for zen control
+  template:
+    src: templates/zen-services.sudoers.j2
+    dest:  /etc/sudoers.d/zen-services
+    mode: 0400
+    owner: root
+    group: root
+
+
+- name: Trigger handlers so that zend will start for tracker install
+  meta: flush_handlers

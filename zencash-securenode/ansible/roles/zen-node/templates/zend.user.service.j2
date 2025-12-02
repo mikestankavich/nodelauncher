@@ -1,0 +1,13 @@
+[Unit]
+Description=ZenCash daemon
+
+[Service]
+Type=forking
+ExecStartPre=/usr/bin/zend -rescan -printtoconsole -pid=%h/.zen/zend.pid
+ExecStart=/bin/sleep 1
+PIDFile=%h/.zen/zend.pid
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# wrapper to trick systemd into not losing unit name from journal
+# https://github.com/systemd/systemd/issues/6565
+# https://github.com/systemd/systemd/issues/2913
+
+/usr/bin/zend $@
+sleep 1

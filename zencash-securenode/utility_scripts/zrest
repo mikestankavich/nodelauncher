@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+
+if [ ! $1 ]; then
+  echo Source is required
+  exit 1
+fi
+
+#if [[ $1 =~ ^(.*)@ ]]; then
+#  src_user=${BASH_REMATCH[1]}
+#else
+#  src_user='zen'
+#fi
+#
+#if [[ $1 =~ :(.*)$ ]]; then
+#  src_path=${BASH_REMATCH[1]}
+#else
+#  src_path='.'
+#fi
+#
+#[[ "@$1:" =~ @([^@:]*): ]] && src_host=${BASH_REMATCH[1]}
+
+src_path="/Users/jmstanka/nl/znode-backup/$1"
+
+if [ ! $2 ]; then
+  echo Destination is required
+  exit 1
+fi
+
+if [[ $2 =~ ^(.*)@ ]]; then
+  dest_user=${BASH_REMATCH[1]}
+else
+  dest_user='zen'
+fi
+
+if [[ $2 =~ :(.*)$ ]]; then
+  dest_path=${BASH_REMATCH[1]}
+else
+  dest_path='~'
+fi
+
+[[ "@$2:" =~ @([^@:]*): ]] && dest_host=${BASH_REMATCH[1]}
+
+
+# echo "src: $1, src_user: $src_user, src_host: $src_host, src_path: $src_path"
+
+migrate_tmp_dir="zmoves/$src_host-$dest_host.$(date '+%F.%T')"
+mkdir -p $migrate_tmp_dir/src $migrate_tmp_dir/dest
+
+# push fqdn - probably doesn't belong here...
+# ssh $dest_user@$dest_host bash -c "echo -n $(hostname -f) > $dest_zen_home/secnodetracker/config/fqdn"
+
+# stop tracker and zend on source and dest nodes
+#ssh -o StrictHostKeyChecking=accept-new $src_user@$src_host znctl stop
+ssh -o StrictHostKeyChecking=accept-new $dest_user@$dest_host znctl stop
+
+# copy wallet and config from source node
+#scp $src_user@$src_host:$src_path/.zen/wallet.dat $src_user@$src_host:$src_path/secnodetracker/config/* $migrate_tmp_dir/src
+#if [ $? -ne 0 ]; then
+#    echo error nz return from source wallet and config copy
+#    ssh $src_user@$src_host znctl start
+#    exit 1
+#fi
+
+# copy wallet and config from destination node (backup)
+scp $dest_user@$dest_host:$dest_path/.zen/wallet.dat $dest_user@$dest_host:$dest_path/secnodetracker/config/* $migrate_tmp_dir/dest
+if [ $? -ne 0 ]; then
+    echo error nz return from destination wallet and config backup
+#    ssh $src_user@$src_host znctl start
+    exit 1
+fi
+
+scp $src_path/wallet.dat $dest_user@$dest_host:$dest_path/.zen/
+if [ $? -ne 0 ]; then
+    echo error nz return from destination wallet copy
+#    ssh $src_user@$src_host znctl start
+    exit 1
+fi
+
+scp $src_path/nodeid $src_path/stakeaddr $dest_user@$dest_host:$dest_path/secnodetracker/config/
+if [ $? -ne 0 ]; then
+    echo error nz return from destination config copy
+#    ssh $src_user@$src_host znctl start
+    exit 1
+fi
+
+# start tracker and zend on dest node
+ssh $dest_user@$dest_host znctl start
+
+#ssh $dest_user@$dest_host cat $dest_path/secnodetracker/config/home
+#echo " "
+#ssh $dest_user@$dest_host cat $dest_path/secnodetracker/config/nodeid
+#echo " "
+
+sleep 7
+ssh $dest_user@$dest_host tail $dest_path/.pm2/logs/secnodetracker-out-0.log
+echo done

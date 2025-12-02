@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+tgt_node_nbr=$1
+tgt_host="hf1"
+
+base_node="$tgt_host:z194"
+base_snap="base-2020-07-20"
+base_ip4="135.181.10.194"
+tgt_ip4="135.181.10.$tgt_node_nbr"
+base_ip6="2a01:4f9:4a:5501:feed::194"
+tgt_ip6="2a01:4f9:4a:5501:feed::$tgt_node_nbr"
+tgt_node="$tgt_host:z$tgt_node_nbr"
+
+echo check if target exists
+if [[ $(lxc list "$tgt_node" -cn --format csv) == "z$tgt_node_nbr" ]]; then
+  echo target $tgt_node exists, abort
+  exit
+fi
+
+echo copy base to target
+lxc copy "$base_node/$base_snap" "$tgt_node"
+
+echo fix target network config
+net_cfg=$(lxc config get "$tgt_node" user.network-config | sed s/$base_ip4/$tgt_ip4/ | sed s/$base_ip6/$tgt_ip6/)
+lxc config set "$tgt_node" user.network-config "$net_cfg"
+
+echo update IP in zen.conf
+workdir=$(mktemp -d)
+mkdir -p "$workdir"
+lxc file pull "$tgt_node/home/zen/.zen/zen.conf" "$workdir/zen.conf"
+sed -i s/$base_ip4/$tgt_ip4/ "$workdir/zen.conf"
+sed -i s/$base_ip6/$tgt_ip6/ "$workdir/zen.conf"
+lxc file push "$workdir/zen.conf" "$tgt_node/home/zen/.zen/zen.conf"
+
+echo use jq to override fqdn and ipv6 in config json
+lxc file pull "$tgt_node/home/zen/secnodetracker/config/config.json" "$workdir/config.json"
+fqdn="$tgt_host-z$tgt_node_nbr.nodelauncher.com"
+jq_expr='.super.fqdn=$fqdn | del(.super.stakeaddr) | del(.super.nodeid)' 
+jq --arg fqdn "$fqdn" "$jq_expr" "$workdir/"config.json > "$workdir/tgtcfg.json"
+
+echo push modified config json to target $tgt_node
+lxc file push "$workdir/tgtcfg.json" "$tgt_node/home/zen/secnodetracker/config/config.json"
+echo push wallet to target $tgt_node
+lxc file delete "$tgt_node/home/zen/.zen/wallet.dat"
+echo disable tracker on target $tgt_node
+#lxc file delete "$tgt_node/etc/systemd/system/multi-user.target.wants/zentracker.service"
+echo boot target node $tgt_node
+lxc start "$tgt_node"
+sleep 6
+ssh -o StrictHostKeyChecking=accept-new "$fqdn" "sudo chown zen:zen /home/zen/{.zen/zen.conf,secnodetracker/config/config.json} && sudo systemctl restart zend"

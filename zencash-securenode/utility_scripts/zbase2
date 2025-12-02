@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+echo make baseline on server $2 from $1
+if [ ! -z $3 ]; then
+  alias=$3
+else
+  alias=zen-base
+fi
+echo $alias
+
+# check that $1 is a running container
+if [ ! $(lxc list --format csv --columns=n $1) ]; then
+  echo Container $1 does not exist
+  exit 1
+fi
+
+# check that $2 is a server
+if [ $(lxc info $2: | yq r - auth) != "trusted" ]; then
+  echo lxc unable to connect to server $2
+  exit 1
+fi
+
+if [ $(lxc info $1 | yq r - Snapshots | grep -o $alias-snap) ]; then
+  echo delete previous baseline snapshot
+  lxc delete $1/$alias-snap
+fi
+
+echo make snapshot
+lxc snapshot $1 $alias-snap
+
+if [ $(lxc list --format csv --columns=n "$2:$alias") ]; then
+  echo Deleting container $2:$alias
+  lxc delete --force $2:$alias
+fi
+
+echo copy from snapshot
+lxc copy $1/$alias-snap $2:$alias
+
+echo delete baseline snapshot
+lxc delete $1/$alias-snap
+
+echo delete network-config
+lxc config unset $2:$alias user.network-config
+echo delete user-data
+lxc config unset $2:$alias user.user-data
+echo delete eth0 device
+lxc config device remove $2:$alias eth0
+echo disable boot.autostart
+lxc config unset $2:$alias boot.autostart.delay
+lxc config unset $2:$alias boot.autostart
+
+echo remove node-specific files
+lxc file delete $2:$alias/home/zen/.zen/wallet.dat \
+                $2:$alias/home/zen/.zen/zend.pid \
+                $2:$alias/home/zen/secnodetracker/config/config.json \
+                $2:$alias/var/log/journal/*
+
+if [ $(lxc image list --format csv -cl $2:$alias) ]; then
+  echo remove existing $alias image
+  lxc image delete $2:$alias
+fi
+
+echo publish cleaned up container to image
+lxc publish --verbose $2:$alias $2: --alias $alias
+
+#echo delete $alias container
+#lxc delete $2:$alias

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+for remote in $(lxc remote list | grep -o "s[bgr][01][0-9] "); do
+  for node in $(lxc list $remote:  | grep -o "z[en][no][-d][ae].."); do
+    echo $node.nodelauncher.com
+  done
+done

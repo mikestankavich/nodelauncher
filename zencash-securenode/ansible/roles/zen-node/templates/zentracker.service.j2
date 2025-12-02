@@ -1,0 +1,15 @@
+[Unit]
+Description=ZenCash node tracker installed on ~/secnodetracker/
+Requires=zend.service
+After=zend.service
+
+[Service]
+User={{ zen_daemon_user }}
+Type=simple
+WorkingDirectory=/home/{{ zen_daemon_user }}/secnodetracker/
+ExecStart=/home/{{ zen_daemon_user }}/secnodetracker/zentracker
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

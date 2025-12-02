@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if [ ! "$1" ]; then
+  echo "Error: group is a required parameter"
+  exit 1
+fi
+group=$1
+shift
+
+ansible $group -u zen -i zen-inv.yml -a "$@"

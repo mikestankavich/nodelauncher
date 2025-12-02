@@ -1,0 +1,8 @@
+set httpd port 2812
+use address localhost # only accept connection from localhost
+allow localhost # allow localhost to connect to the server
+#
+### zend process control
+check process zend with pidfile /home/{{ zen_daemon_user }}/.zen/zen_node.pid
+start program = "/home/{{ zen_daemon_user }}/zen_node.sh start" with timeout 60 seconds
+stop program = "/home/{{ zen_daemon_user }}/zen_node.sh stop"

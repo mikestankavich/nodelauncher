@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+for n in $@; do 
+  echo $n
+  ssh zen@$n -o StrictHostKeyChecking=accept-new "ztc chal --wait" 
+  # sleep 60
+done
+

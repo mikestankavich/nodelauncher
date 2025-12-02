@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+if [ -n $1 ] ; then
+  host="$1"
+else
+  echo "host required"
+  exit 1
+fi
+
+if [ -n $2 ] ; then
+  toaddr="$2"
+else
+  toaddr=$(ssh $host cat secnodetracker/config/stakeaddr)
+fi
+
+#echo $toaddr
+
+zaddr=$(ssh $host zen-cli z_listaddresses | jq -r '.[0]')
+#echo $zaddr
+
+zbal=$(ssh $host zen-cli z_getbalance $zaddr)
+#echo $zbal
+
+amt=$( python -c "print($zbal-0.0001)")
+#echo $amt
+
+read -p "Send $amt ZEN from $zaddr to $toaddr? (y/n) " -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  ssh $host zen-cli z_sendmany $zaddr "'"'[{"address": "'"$toaddr"'", "amount":'"$amt"'}]'"'"
+fi

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# init vars
+backup_suffix=$1
+migrate_tmp_dir=/tmp/zen-migrate.$backup_suffix
+dest_zen_home=~
+
+# stop tracker
+pm2 stop 0
+# stop zend
+sudo monit stop zend
+sleep 15
+
+# back up wallet and config
+mv $dest_zen_home/.zen/wallet.dat $dest_zen_home/.zen/wallet.dat.$backup_suffix
+mv $dest_zen_home/secnodetracker/config/stakeaddr $dest_zen_home/secnodetracker/config/stakeaddr.$backup_suffix
+mv $dest_zen_home/secnodetracker/config/nodeid $dest_zen_home/secnodetracker/config/nodeid.$backup_suffix
+
+# copy wallet and config
+cp $migrate_tmp_dir/wallet.dat $dest_zen_home/.zen/wallet.dat
+cp $migrate_tmp_dir/stakeaddr $dest_zen_home/secnodetracker/config/stakeaddr
+cp $migrate_tmp_dir/nodeid $dest_zen_home/secnodetracker/config/nodeid
+
+# push fqdn
+echo -n $(hostname -f) > $dest_zen_home/secnodetracker/config/fqdn
+# start zend
+sudo monit start zend
+pm2 start 0
+
+if [ $? -ne 0 ]; then
+  cd $dest_zen_home/secnodetracker
+  pm2 start app.js --name securenodetracker
+fi

@@ -1,0 +1,13 @@
+[Unit]
+Description=ZenCash daemon
+
+[Service]
+User=zen
+Type=forking
+ExecStart=/home/zen/.zen/zend -printtoconsole -pid=/home/zen/.zen/zend.pid
+PIDFile=/home/zen/.zen/zend.pid
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

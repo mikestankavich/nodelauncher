@@ -1,0 +1,24 @@
+{% set ip4_base = ip_address.split('.')[0:3] | join('.') %}
+auto br0
+iface br0 inet static
+  address {{ ip_address }}
+  netmask 255.255.255.0
+  network {{ ip4_base }}.0
+  broadcast {{ ip4_base }}.255
+  gateway {{ ip4_base }}.254
+  bridge_ports {{ nic_device }}
+  bridge_stp off
+  bridge_fd 0
+  bridge_maxwait 0
+  dns-servers 213.251.128.137 213.186.33.99
+  dns-search 4nl.co nodelauncher.com
+
+iface br0 inet6 static
+  address {{ ip_address6 }}
+  gateway6: {{ gateway6 }}
+  netmask 64
+  # set up routing
+  post-up /sbin/ip -f inet6 route add {{ gateway6 }} dev br0
+  post-up /sbin/ip -f inet6 route add default via {{ gateway6 }}
+  pre-down /sbin/ip -f inet6 route del default via {{ gateway6 }}
+  pre-down /sbin/ip -f inet6 route del {{ gateway6 }} dev br0

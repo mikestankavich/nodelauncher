@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+src_node=$1
+tgt_node=$2
+fqdn="$tgt_node.nodelauncher.com"
+workdir=$(mktemp -d)
+
+echo stop zend on source $src_node
+ssh -o StrictHostKeyChecking=accept-new "nladmin@$src_node" "sudo systemctl stop zend"
+echo stop zend on target $tgt_node
+ssh -o StrictHostKeyChecking=accept-new "nladmin@$tgt_node" "sudo systemctl stop zend"
+echo get wallet and config from source $src_node
+mkdir -p /tmp/zbp
+scp -T "zen@$src_node:{.zen/wallet.dat,secnodetracker/config/config.json}" "$workdir/"
+echo use jq to override fqdn and ipv6 in config json
+jq_expr='.super.fqdn=$fqdn | .super.home="xns1.eu" | .super.region="eu"' 
+jq --arg fqdn "$fqdn" "$jq_expr" "$workdir/"config.json >  "$workdir/config.zbp"
+echo push modified config json to target $tgt_node
+scp -T "$workdir/config.zbp" "zen@$tgt_node:secnodetracker/config/config.json"
+echo push wallet to target $tgt_node
+scp -T "$workdir/wallet.dat" "zen@$tgt_node:.zen/wallet.dat"
+echo restart tracker on target $tgt_node
+ssh "nladmin@$tgt_node" "sudo systemctl enable zentracker && ztc start --wait"
+echo disable tracker on source $src_node
+ssh "nladmin@$src_node" "sudo systemctl disable zentracker && sudo systemctl start zend"

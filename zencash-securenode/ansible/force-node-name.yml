@@ -1,0 +1,14 @@
+---
+- name: Force name /etc/hostname, secnodetracker/config/fqdn
+  hosts: zen
+  gather_facts: yes
+  tasks:
+  become: yes
+  - name: change /etc/hostname to match inventory_hostname
+    command: "hostname {{ inventory_hostname.split('.')[0] }}"
+  - name: change tracker fqdn
+    shell: "echo -n $(hostname -f) > secnodetracker/config/fqdn
+    become_user: zen
+    # when: file exists
+  # - name: change tracker fqdn
+  #   lineinfile config.json

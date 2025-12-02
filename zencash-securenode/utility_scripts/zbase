@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+echo make baseline on server $2 from $1 in region $3
+
+# check that $1 is a running container
+if [ ! $(lxc list --format csv --columns=n $1) ]; then
+  echo Container $1 does not exist
+  exit 1
+fi
+
+# check that $2 is a server
+if [ $(lxc info $2: | yq r - auth) != "trusted" ]; then
+  echo lxc unable to connect to server $2
+  exit 1
+fi
+
+if [ $(lxc info $1 | yq r - Snapshots | grep -o zen-base-snap) ]; then
+  echo delete previous baseline snapshot
+  lxc delete $1/zen-base-snap
+fi
+
+echo make snapshot
+lxc snapshot $1 zen-base-snap
+
+if [ $(lxc list --format csv --columns=n "$2:zen-base") ]; then
+  echo Deleting container $2:zen-base
+  lxc delete --force $2:zen-base
+fi
+
+echo copy from snapshot
+lxc copy $1/zen-base-snap $2:zen-base
+
+echo delete baseline snapshot
+lxc delete $1/zen-base-snap
+
+echo delete network-config
+lxc config unset $2:zen-base user.network-config
+echo delete user-data
+lxc config unset $2:zen-base user.user-data
+echo delete eth0 device
+lxc config device remove $2:zen-base eth0
+
+echo remove node-specific files
+lxc file delete $2:zen-base/home/zen/.zen/wallet.dat \
+                $2:zen-base/home/zen/.zen/zend.pid \
+                $2:zen-base/home/zen/secnodetracker/config/config.json \
+                $2:zen-base/var/log/journal/*
+
+if [ $(lxc image list --format csv -cl $2:zen-base) ]; then
+  echo remove existing zen-base image
+  lxc image delete $2:zen-base
+fi
+
+echo publish cleaned up container to image
+lxc publish --verbose $2:zen-base $2: --alias zen-base
+
+#echo delete zen-base container
+#lxc delete $2:zen-base

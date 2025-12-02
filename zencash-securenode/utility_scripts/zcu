@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+if [[ ! $1 =~ ^(c|chal|challenge|b|back|backup|i|info|d|dump|csv)$ ]]; then
+    echo "Action required: c | chal | challenge | b | back | backup | i | info| csv"
+    exit 1
+fi
+
+# todo: if user != zen, sudo -u zen zen-cli
+
+zen_home=securenodes$(cat ~/secnodetracker/config/home | sed s/^ts1/ts/ | sed s/^ts//).zensystem.io
+z_address=$(zen-cli z_listaddresses | grep -o '\w\+')
+node_id=$(cat ~/secnodetracker/config/nodeid)
+
+if [[ $1 =~ ^(c|chal|challenge)$ ]]; then
+  curl -O "https://$zen_home/$z_address/$node_id/send"
+fi
+
+
+if [[ $1 =~ ^(b|back|backup|i|info)$ ]]; then
+  cat <<YML
+$(hostname):
+  host_name: $(hostname -f)
+  ip_address: $(dig +short myip.opendns.com @resolver1.opendns.com)
+  chal_address: $z_address
+  chal_balance: $(zen-cli z_getbalance $z_address)
+  chal_key: $(zen-cli z_exportkey $z_address)
+  email: $(cat /home/zen/secnodetracker/config/email)
+  nodeid: $node_id
+  region: $(cat /home/zen/secnodetracker/config/region)
+  stake_addr: $(cat /home/zen/secnodetracker/config/stakeaddr)
+YML
+fi
+
+t_addr=$(zen-cli listaddresses | jq -r '.[0]')
+t_key=$(zen-cli dumpprivkey $t_addr)
+t_balance=$(zen-cli z_gettotalbalance | jq -r '.transparent')
+z_addr_0=$(zen-cli z_listaddresses | jq -r '.[0]')
+z_balance_0=$(zen-cli z_getbalance $z_addr_0)
+z_key_0=$(zen-cli z_exportkey $z_addr_0)
+if [ "$(zen-cli z_listaddresses | jq length)" -gt "1" ]; then
+  z_addr_1=$(zen-cli z_listaddresses | jq -r '.[1]')
+  z_balance_1=$(zen-cli z_getbalance $z_addr_1)
+  z_key_1=$(zen-cli z_exportkey $z_addr_1)
+else
+  z_addr_1=""
+  z_balance_1=0.0
+  z_key_1=""
+fi
+z_balance=$(zen-cli z_gettotalbalance | jq -r '.private')
+balance=$(zen-cli z_gettotalbalance | jq -r '.total')
+node_id=$(cat ~/secnodetracker/config/nodeid)
+zen_home=securenodes$(cat ~/secnodetracker/config/home | sed s/^ts1/ts/ | sed s/^ts//).zensystem.io
+email=$(cat /home/zen/secnodetracker/config/email)
+region=$(cat /home/zen/secnodetracker/config/region)
+stake_addr=$(cat /home/zen/secnodetracker/config/stakeaddr)
+node_detail_url=https://$zen_home/nodes/$node_id/detail
+
+if [[ $1 =~ ^(csv)$ ]]; then
+  echo "\"$t_addr\",\"$t_key\",$t_balance,\"$z_addr_0\",\"$z_key_0\",$z_balance_0,\"$z_addr_1\",\"$z_key_1\",$z_balance_1,$balance,$node_id,\"$email\",\"$region\",\"$node_detail_url\",\"$stake_addr\""
+fi
+
+# to copy to nodes:
+# ansible -i zen-inv.yml zen -u nladmin -b -m copy -a 'src=../utility_scripts/zcu dest=/usr/local/bin/zcu owner=root group=root mode=0755'
+# run:
+# ansible -i zen-inv.yml zen -u zen -a 'zcu b'
+# ansible -i zen-inv.yml zen -u zen -m shell -a 'zcu b > ~/zcub.yml'
+# ansible -i zen-inv.yml zen -u zen -m fetch -a 'src=~/zcub.yml dest=out'

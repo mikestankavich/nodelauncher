@@ -1,0 +1,49 @@
+---
+- name: Get ACME client script from github
+  git:
+    repo: https://github.com/Neilpang/acme.sh.git
+    dest: ~/acme.sh
+
+- name: Create acme.sh config directory
+  file:
+    state: directory
+    dest: /usr/local/var/acme
+
+- name: Create acme.sh config directory
+  file:
+    state: directory
+    dest: /usr/local/var/acme
+
+- name: Install ACME client script
+  command: ./acme.sh --install --home /usr/local/bin --config-home /usr/local/var/acme
+  args:
+    chdir: ~/acme.sh
+    creates: /usr/local/bin/acme.sh
+
+- name: List existing certificates if any
+  command: /usr/local/bin/acme.sh --list --home /usr/local/var/acme
+  register: list_certs
+  changed_when: false
+
+- name: Create letsencrypt certificate
+  command: /usr/local/bin/acme.sh --issue --standalone -d {{ cert_fqdn }} --home /usr/local/var/acme
+  when: not list_certs.stdout_lines | select('match', cert_fqdn + '\\s.*') | list
+
+- name: Add acme client script call to keep certificate renewed to cron
+  cron:
+    name: Renew letsencrypt certificate
+    day: 6
+    job: /usr/local/bin/acme.sh --cron --home /usr/local/var/acme > /dev/null
+
+# should I symlink instead?
+- name: Copy cert file to ca-certificates
+  copy:
+    remote_src: yes
+    src: /usr/local/var/acme/{{ cert_fqdn }}/ca.cer
+    dest: /usr/local/share/ca-certificates/{{ cert_fqdn }}.crt
+  register: copy_ca_file
+
+- name: Add cert file to cert authorities in ca-certificates
+  command: update-ca-certificates
+  when: copy_ca_file | changed
+

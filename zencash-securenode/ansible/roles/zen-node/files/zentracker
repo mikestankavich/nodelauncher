@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+for delay in {1..90}; do
+  getinfo=$(zen-cli getinfo)
+  getinfo_rc=$?
+  if [ $getinfo_rc -eq 1 ] ; then
+    exit 1
+  fi
+  conns=$(($(echo "$getinfo" | jq -r '.connections') + 0))
+  if (( conns >= 8 )); then
+    # echo $conns
+    node app.js
+    exit
+  fi
+  let "remainder = delay % 5"
+  if [ "$remainder" -eq 0 ] && [ "$getinfo_rc" -eq 0 ]; then
+    echo "Waiting for zend connections... $conns/8"
+  fi
+  sleep 1
+done
+echo Timed out waiting for zend peers
+exit 1

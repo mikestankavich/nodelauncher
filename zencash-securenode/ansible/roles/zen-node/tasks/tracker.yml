@@ -1,0 +1,121 @@
+---
+# todo: see if better to install via apt
+- name: Install global node modules from npm
+  npm:
+    name: "{{ item }}"
+    global: yes
+  with_items:
+    - n
+    - pm2
+
+- name: Install latest node through version manager
+  command: n latest
+  register: install_latest_node
+  changed_when: install_latest_node.stdout
+
+- name: Get nodetracker from github
+  become_user: "{{ zen_daemon_user }}"
+  become: no
+  git:
+    repo: https://github.com/ZencashOfficial/secnodetracker.git
+    dest: ~/secnodetracker
+    force: yes
+  register: git_pull_nodetracker
+
+# todo: figure out how to revert package.json if it changes
+- name: Install node modules for nodetracker
+  become_user: "{{ zen_daemon_user }}"
+  become: no
+  command: npm install
+  args:
+    chdir: ~/secnodetracker
+  when: git_pull_nodetracker.changed
+
+- name: Revert package.json so we don't have trouble pulling later
+  become_user: "{{ zen_daemon_user }}"
+  become: no
+  command: git checkout -- package.json
+  args:
+    chdir: ~/secnodetracker
+  when: git_pull_nodetracker.changed
+
+## todo: PR to integrate unattended setup
+#- name: Copy modified tracker setup with command line parameter support
+#  copy:
+#    src: files/us.js
+#    dest: /home/{{ zen_daemon_user }}/secnodetracker/us.js
+#    owner: "{{ zen_daemon_user }}"
+#    group: "{{ zen_daemon_user }}"
+#    mode: 0644
+
+- name: Copy tracker launch script with wait for connections
+  copy:
+    src: files/zentracker
+    dest: /home/{{ zen_daemon_user }}/secnodetracker/zentracker
+    owner: "{{ zen_daemon_user }}"
+    group: "{{ zen_daemon_user }}"
+    mode: 0755
+
+- name: Generate zen tracker service control script
+  template:
+    src: templates/zentracker.service.j2
+    dest:  /lib/systemd/system/zentracker.service
+    mode: 0644
+    owner: root
+    group: root
+  notify: restart_zentracker
+
+#- name: Add sudoers for zentracker control
+#  template:
+#    src: templates/zentracker.sudoers.j2
+#    dest:  /etc/sudoers.d/zentracker.sudoers
+#    mode: 0644
+#    owner: root
+#    group: root
+
+- name: Make sure tracker config dir exists
+  file:
+    dest: "/home/{{ zen_daemon_user }}/secnodetracker/config"
+    owner: "{{ zen_daemon_user }}"
+    group: "{{ zen_daemon_user }}"
+    mode: 0755
+    state: directory
+  tags: prep
+
+# todo: get servers list from zen api
+
+- name: Push baseline config.json tracker config
+  template:
+    src: templates/config.json.j2
+    dest: "/home/{{ zen_daemon_user }}/secnodetracker/config/config.json"
+    mode: 0644
+    owner: "{{ zen_daemon_user }}"
+    group: "{{ zen_daemon_user }}"
+    force: no
+  notify: restart_zentracker
+  tags: prep
+
+#- name: Push nodetracker config values into config store
+#  copy:
+#    content: "{{ item.value }}"
+#    dest: "/home/{{ zen_daemon_user }}/secnodetracker/config/{{ item.key }}"
+#    owner: "{{ zen_daemon_user }}"
+#    group: "{{ zen_daemon_user }}"
+#    mode: 0644
+#  with_items:
+#    - key: fqdn
+#      value: "{{ cert_fqdn | default(ansible_fqdn) }}"
+#    - key: ipv
+#      value: 4
+#    - key: region
+#      value: "{{ tracker_region | default('eu') }}"
+#  tags: update_fqdn
+#  notify: restart_zentracker
+
+- name: Restart zentracker service
+  systemd:
+    enabled: yes
+    # state: restarted
+    daemon_reload: yes
+    name: zentracker
+

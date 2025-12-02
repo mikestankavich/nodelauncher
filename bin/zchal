@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# send a request to run a challeng to one or more zen nodes
+# zchal <node1> [, <node2>...] 
+
+for n in $@; do 
+  echo $n
+  ssh zen@$n -o StrictHostKeyChecking=accept-new "ztc chal --wait" 
+  # sleep 60
+  sleep 270
+done
+

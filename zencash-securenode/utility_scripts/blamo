@@ -1,0 +1,376 @@
+#!/usr/bin/env bash
+
+ssh zen@sb21-z0f ztc eol
+ssh zen@sb21-z10 ztc eol
+ssh zen@sb22-z05 ztc eol
+ssh zen@sb22-z06 ztc eol
+ssh zen@sb22-z08 ztc eol
+ssh zen@sb23-z07 ztc eol
+ssh zen@sb24-z0b ztc eol
+ssh zen@sb24-z0c ztc eol
+ssh zen@sb24-z0d ztc eol
+ssh zen@sb24-z0e ztc eol
+ssh zen@sb24-z0f ztc eol
+ssh zen@sb24-z10 ztc eol
+ssh zen@sb25-z0d ztc eol
+ssh zen@sb26-z08 ztc eol
+ssh zen@sb26-z09 ztc eol
+ssh zen@sb26-z0a ztc eol
+ssh zen@sb26-z0b ztc eol
+ssh zen@sb26-z0d ztc eol
+ssh zen@sb26-z10 ztc eol
+ssh zen@sb27-z00 ztc eol
+ssh zen@sb27-z01 ztc eol
+ssh zen@sb27-z0a ztc eol
+ssh zen@sb27-z0c ztc eol
+ssh zen@sb27-z0d ztc eol
+ssh zen@sb27-z10 ztc eol
+ssh zen@sb28-z10 ztc eol
+
+#./zstake1 sb20-z01 sb20-z02 sb20-z03 sb20-z04 sb20-z05 sb20-z09 sb20-z0a sb20-z0b sb20-z0c
+#./zstake1 sb20-z0d sb20-z0e sb20-z0f sb20-z10 sb21-z00 sb21-z01 sb21-z02 sb21-z03 sb21-z04
+#./zstake1 sb21-z05 sb21-z07 sb21-z08 sb21-z09 sb21-z0a sb21-z0b sb21-z0c sb21-z11 sb22-z07
+#./zstake1 sb22-z09 sb22-z0a sb22-z0b sb22-z0c sb22-z0d sb22-z0e sb22-z10 sb23-z00 sb23-z01
+#./zstake1 sb23-z02 sb23-z03 sb23-z04 sb23-z05 sb23-z06 sb23-z08 sb23-z09 sb23-z0a sb23-z0b
+#./zstake1 sb23-z0c sb23-z0d sb23-z0e sb23-z0f sb23-z10 sb23-z11 sb24-z00 sb24-z01 sb24-z02
+#./zstake1 sb24-z03 sb24-z04 sb24-z05 sb24-z06 sb24-z07 sb24-z08 sb24-z09 sb24-z0a sb25-z01
+#./zstake1 sb25-z02 sb25-z03 sb25-z04 sb25-z05 sb25-z06 sb25-z07 sb25-z08 sb25-z09 sb25-z0a
+#./zstake1 sb25-z0b sb25-z0c sb25-z0e sb25-z0f sb25-z10 sb26-z01 sb26-z02 sb26-z04 sb26-z0c
+#./zstake1 sb27-z02 sb27-z03 sb27-z04 sb27-z06 sb27-z07 sb27-z08 sb27-z09 sb27-z0b sb27-z0e
+#./zstake1 sb27-z0f sb28-z00 sb28-z01 sb28-z02 sb28-z03 sb28-z04 sb28-z05 sb28-z06 sb28-z07
+#./zstake1 sb28-z08 sb28-z09 sb28-z0a sb28-z0b sb28-z0c sb28-z0f
+
+#./dstake sb22-z05
+#./dstake sb22-z0d
+#./dstake sb22-z0e
+#./dstake sb24-z0e
+#./dstake sb24-z0f
+#./dstake sb26-z02
+#./dstake sb26-z08
+#./dstake sb26-z09
+#./dstake sb26-z0d
+#./dstake sb27-z0d
+#./dstake sb28-z0a
+
+#ssh zen@zen-a5m pm2 log 0
+#ssh zen@zen-a5n pm2 log 0
+#ssh zen@zen-a5o pm2 log 0
+#ssh zen@zen-a3g pm2 log 0
+#ssh zen@zen-a3h pm2 log 0
+#ssh zen@zen-a3j pm2 log 0
+
+#./zmove zen-a4p zen-a5m
+#./zmove zen-a4q zen-a5n
+#./zmove zen-a4r zen-a5o
+#./zmove zen-a4s zen-a3g
+#./zmove zen-a4t zen-a3h
+#./zmove zen-b1c zen-a3j
+
+#scp ~/nl/znode-backup-20180911/zen-b1d/wallet.dat zen@zen-a3m:.zen/
+#scp ~/nl/znode-backup-20180911/zen-b1d/{nodeid,stakeaddr} zen@zen-a3m:secnodetracker/config/
+#ssh zen@zen-a3m sudo monit restart zend
+#scp ~/nl/znode-backup-20180911/zen-b1e/wallet.dat zen@zen-a3n:.zen/
+#scp ~/nl/znode-backup-20180911/zen-b1e/{nodeid,stakeaddr} zen@zen-a3n:secnodetracker/config/
+#ssh zen@zen-a3n sudo monit restart zend
+
+#scp ~/nl/znode-backup-20180911/znode36/wallet.dat zen@zen-a6a:.zen/
+#scp ~/nl/znode-backup-20180911/znode36/{nodeid,stakeaddr} zen@zen-a6a:secnodetracker/config/
+#ssh zen@zen-a6a sudo monit restart zend
+#scp ~/nl/znode-backup-20180911/znode37/wallet.dat zen@zen-a6b:.zen/
+#scp ~/nl/znode-backup-20180911/znode37/{nodeid,stakeaddr} zen@zen-a6b:secnodetracker/config/
+#ssh zen@zen-a6b sudo monit restart zend
+#scp ~/nl/znode-backup-20180911/znode38/wallet.dat zen@zen-a6c:.zen/
+#scp ~/nl/znode-backup-20180911/znode38/{nodeid,stakeaddr} zen@zen-a6c:secnodetracker/config/
+#ssh zen@zen-a6c sudo monit restart zend
+#scp ~/nl/znode-backup-20180911/znode39/wallet.dat zen@zen-a6d:.zen/
+#scp ~/nl/znode-backup-20180911/znode39/{nodeid,stakeaddr} zen@zen-a6d:secnodetracker/config/
+#ssh zen@zen-a6d sudo monit restart zend
+#scp ~/nl/znode-backup-20180911/znode40/wallet.dat zen@zen-a6e:.zen/
+#scp ~/nl/znode-backup-20180911/znode40/{nodeid,stakeaddr} zen@zen-a6e:secnodetracker/config/
+#ssh zen@zen-a6e sudo monit restart zend
+#
+
+
+#ssh zen@znode36 zreg znVDm6HzVyXor17pcUFUidnGqTCC75wDnoL
+#sleep 99
+#ssh zen@znode37 zreg znfSysQ3uRCivjcVEWFipJZeK1DF1ZvxLuz
+#sleep 99
+#ssh zen@znode38 zreg znnqZmiCYMXQHvqs61W6Zpdgg7v4R6njYpd
+#sleep 44
+#ssh zen@znode39 zreg znkK8riYNFwYHd9Y7GE3QoMgzo8Hd58tXu9
+#sleep 44
+#ssh zen@znode40 zreg znUCdDqhQJQkkjyAJtma2jm4PHZ1f6x8JUH
+#ssh zen@znode59 zreg znagHGkxubSVmwbv3RSSakQvQy9bJx7cn48
+
+#./zmove zen-b0g znode51
+#./zmove zen-b0h znode52
+#./zmove zen-b0i znode53
+#./zmove zen-b0j znode54
+#./zmove zen-b0k znode55
+#./zmove zen-b0l znode56
+#./zmove zen-b0m znode57
+#./zmove zen-b0n znode58
+
+#ssh zen@zen-a6s.nodelauncher.com pm2 restart 0
+#ssh zen@zen-a6t.nodelauncher.com pm2 restart 0
+#ssh zen@zen-b23.nodelauncher.com pm2 restart 0
+#ssh zen@zen-b2e.nodelauncher.com pm2 restart 0
+#ssh zen@zen-b26.nodelauncher.com pm2 restart 0
+#ssh zen@zen-a5l.nodelauncher.com pm2 restart 0
+
+#ssh nladmin@zen-a6s.nodelauncher.com sudo reboot
+#ssh nladmin@zen-a6t.nodelauncher.com sudo reboot
+#ssh nladmin@zen-b23.nodelauncher.com sudo reboot
+#ssh nladmin@zen-b2e.nodelauncher.com sudo reboot
+#ssh nladmin@zen-b26.nodelauncher.com sudo reboot
+#ssh nladmin@zen-a5l.nodelauncher.com sudo reboot
+
+#ssh nladmin@znode21.nodelauncher.com sudo reboot
+#ssh nladmin@zen-a4u.nodelauncher.com sudo reboot
+#ssh nladmin@zen-a4w.nodelauncher.com sudo reboot
+#ssh nladmin@zen-a9t.nodelauncher.com sudo reboot
+#ssh nladmin@zen-a9v.nodelauncher.com sudo reboot
+#ssh nladmin@zen-a9h.nodelauncher.com sudo reboot
+#ssh nladmin@zen-b1f.nodelauncher.com sudo reboot
+#ssh nladmin@zen-b0b.nodelauncher.com sudo reboot
+#ssh nladmin@zen-b04.nodelauncher.com sudo reboot
+#ssh nladmin@zen-b01.nodelauncher.com sudo reboot
+#ssh nladmin@zen-b02.nodelauncher.com sudo reboot
+#ssh nladmin@zen-b0c.nodelauncher.com sudo reboot
+#ssh nladmin@zen-a5c.nodelauncher.com sudo reboot
+
+#ssh nladmin@znode45 sudo reboot
+#ssh nladmin@zen-a4u sudo reboot
+#ssh nladmin@zen-a6e sudo reboot
+#ssh nladmin@zen-a7e sudo reboot
+#ssh nladmin@zen-a6j sudo reboot
+#ssh nladmin@zen-a6q sudo reboot
+#ssh nladmin@zen-a7v sudo reboot
+#ssh nladmin@zen-a8d sudo reboot
+#ssh nladmin@zen-a7s sudo reboot
+#ssh nladmin@zen-a7t sudo reboot
+#ssh nladmin@zen-a7u sudo reboot
+#ssh nladmin@zen-a7z sudo reboot
+#ssh nladmin@zen-a7x sudo reboot
+#ssh nladmin@zen-a8f sudo reboot
+#ssh nladmin@zen-a9t sudo reboot
+#ssh nladmin@zen-a8g sudo reboot
+#ssh nladmin@zen-b0x sudo reboot
+#ssh nladmin@zen-b0b sudo reboot
+#ssh nladmin@zen-b04 sudo reboot
+#ssh nladmin@zen-b07 sudo reboot
+#ssh nladmin@zen-b02 sudo reboot
+#ssh nladmin@zen-b0c sudo reboot
+#ssh nladmin@zen-b1t sudo reboot
+
+#./zmove zen-a6a zen-b0o
+#./zmove zen-a6b zen-b0p
+#./zmove zen-a6g zen-b0q
+#./zmove zen-a6h zen-b0r
+#./zmove zen-a6i zen-b0s
+#./zmove zen-a6j zen-b0t
+#./zmove zen-a6k zen-b0u
+#./zmove zen-a6m zen-b0v
+./zmove zen-b1g zen-b0w
+./zmove zen-b1h zen-b0x
+./zmove zen-b1i zen-b0y
+./zmove zen-b1j zen-b0z
+
+#./zmove zen-a6d zen-b19
+#./zmove zen-a6e zen-b1a
+#./zmove zen-a6f zen-b1b
+#./zmove zen-a4k zen-b00
+#./zmove zen-a6n zen-b01
+#./zmove zen-a6p zen-b02
+#./zmove zen-a6q zen-b03
+#./zmove zen-a6r zen-b04
+#./zmove zen-a6s zen-b05
+#./zmove zen-a6t zen-b06
+#./zmove zen-a6u zen-b07
+#./zmove zen-a6v zen-b08
+#./zmove zen-a6w zen-b09
+#./zmove zen-a6x zen-b0a
+#./zmove zen-a6y zen-b0b
+#./zmove zen-a6z zen-b0c
+#./zmove zen-b1k zen-b0d
+#./zmove zen-b1m zen-b0e
+#./zmove zen-b1n zen-b0f
+
+#ssh zen@zen-a5e sed -i s/znpHpKpwH5xzpJtXJHHnwkHHVHmJLAMZ3T1/znVtCHygi19YCY9E1KDjneRJ4ehpUWXD3Ts/ secnodetracker/config/stakeaddr
+#ssh zen@zen-a5f sed -i s/zncrDVskkH6hsTVumcNLS4FApykMZpfoatz/znRH9J7hU1Twe8U1Vgz7rdT8NrUn28qBrC8/ secnodetracker/config/stakeaddr
+#ssh zen@zen-a5g sed -i s/znmTM5WthpQ6k6XkPc8ehdaBEv592R8JfNx/znV5uERL5D1VTRefJfuqUp35A2HeayfmHko/ secnodetracker/config/stakeaddr
+#ssh zen@zen-a5h sed -i s/znT1LMkwg38yWQYfHagmrgzqiVyPmHJdyNB/zngRD22jgefKBnMXDCsSWPzd8cWPRGkWyG3/ secnodetracker/config/stakeaddr
+#ssh zen@zen-a4i sed -i s/zncLL5NVt9bpDGhyZbWBJmznwsgVqoeRcQa/znh2ftUga8L9LT9ifhzRYezrs8qV9VKZuTZ/ secnodetracker/config/config.json
+#ssh zen@zen-a4j sed -i s/znj7BkWu8E61YQUawwReBhh7jY1Y3wCkF1o/zni49859gC2555RUDD2f6ufKhxzZuW4Voh6/ secnodetracker/config/config.json
+#ssh zen@zen-a4l sed -i s/znVjp8RGkPAFjjDQKG4222cVKMp8q8pStZL/zndo5HsMiWmZbeKbXZMbWcqrZPMDXpfQPiH/ secnodetracker/config/config.json
+#ssh zen@zen-a4m sed -i s/znnN2uh9U93hLEvjhqswmdw2N7m4hAfA4Ly/znn3K1wh1MFub4QnGpJKhKkunb1UyTGhxLk/ secnodetracker/config/config.json
+#ssh zen@zen-a4n sed -i s/znhh7CC1iXQKQaNENh9QzgXPvBpJ46QtiFW/znfSYJPBfmm92nTxQBR922Hcvjc4VGBGr7v/ secnodetracker/config/config.json
+#ssh zen@zen-a4o sed -i s/zni6oYBEHdzk3X6gM27J37eSVf4uT26tv4G/znbgTFHcHu9cfedAQBA8uRLa1eXqPVqojy1/ secnodetracker/config/config.json
+#ssh zen@zen-a4y sed -i s/znXZ9kC75XPdbehD4wQZ18DGyDavFEugjcr/znZPGjd2CC7kRja17CpTqyv4F63WtT4MbmY/ secnodetracker/config/config.json
+#ssh zen@zen-a4z sed -i s/znavA2uFKvBrrCZp1UmjnzEPPbG7gWhHBaD/zneDi8bvTc8yewSUgJBwMF6q4jqRCNoDw54/ secnodetracker/config/config.json
+#
+#ssh zen@zen-a5e pm2 restart 0 && ssh zen@zen-a5e pm2 log 0
+#ssh zen@zen-a5f pm2 restart 0 && ssh zen@zen-a5f pm2 log 0
+#ssh zen@zen-a5g pm2 restart 0 && ssh zen@zen-a5g pm2 log 0
+#ssh zen@zen-a5h pm2 restart 0 && ssh zen@zen-a5h pm2 log 0
+#ssh zen@zen-a4i sudo systemctl restart zentracker && ssh zen@zen-a4i journalctl -f
+#ssh zen@zen-a4j sudo systemctl restart zentracker && ssh zen@zen-a4j journalctl -f
+#ssh zen@zen-a4l sudo systemctl restart zentracker && ssh zen@zen-a4l journalctl -f
+#ssh zen@zen-a4m sudo systemctl restart zentracker && ssh zen@zen-a4m journalctl -f
+#ssh zen@zen-a4n sudo systemctl restart zentracker && ssh zen@zen-a4n journalctl -f
+#ssh zen@zen-a4o sudo systemctl restart zentracker && ssh zen@zen-a4o journalctl -f
+#ssh zen@zen-a4y sudo systemctl restart zentracker && ssh zen@zen-a4y journalctl -f
+#ssh zen@zen-a4z sudo systemctl restart zentracker && ssh zen@zen-a4z journalctl -f
+
+#ssh zen@$1 sed -i s/zen-a4z/$1/ secnodetracker/config/config.json
+#ssh zen@$1 sudo systemctl restart zentracker
+#
+#scp config.json zen@$1:secnodetracker/config/config.json
+#ssh zen@$1 sudo systemctl restart zentracker
+#ssh zen@$1 journalctl -f
+
+#scp ~/nl/znode-backup-20180704/zen-a2b/nodeid ~/nl/znode-backup-20180704/zen-a2b/stakeaddr zen@zen-a5e:secnodetracker/config/
+#scp ~/nl/znode-backup-20180704/zen-a2c/nodeid ~/nl/znode-backup-20180704/zen-a2c/stakeaddr zen@zen-a5f:secnodetracker/config/
+#scp ~/nl/znode-backup-20180704/zen-a2d/nodeid ~/nl/znode-backup-20180704/zen-a2d/stakeaddr zen@zen-a5g:secnodetracker/config/
+#scp ~/nl/znode-backup-20180704/zen-a2e/nodeid ~/nl/znode-backup-20180704/zen-a2e/stakeaddr zen@zen-a5h:secnodetracker/config/
+#scp ~/nl/znode-backup-20180704/zen-a3s/nodeid ~/nl/znode-backup-20180704/zen-a3s/stakeaddr zen@zen-a4i:secnodetracker/config/
+#scp ~/nl/znode-backup-20180704/zen-a3t/nodeid ~/nl/znode-backup-20180704/zen-a3t/stakeaddr zen@zen-a4j:secnodetracker/config/
+#scp ~/nl/znode-backup-20180704/zen-a3u/nodeid ~/nl/znode-backup-20180704/zen-a3u/stakeaddr zen@zen-a4l:secnodetracker/config/
+#scp ~/nl/znode-backup-20180704/zen-a3v/nodeid ~/nl/znode-backup-20180704/zen-a3v/stakeaddr zen@zen-a4m:secnodetracker/config/
+#scp ~/nl/znode-backup-20180704/zen-a3w/nodeid ~/nl/znode-backup-20180704/zen-a3w/stakeaddr zen@zen-a4n:secnodetracker/config/
+#scp ~/nl/znode-backup-20180704/zen-a3x/nodeid ~/nl/znode-backup-20180704/zen-a3x/stakeaddr zen@zen-a4o:secnodetracker/config/
+#scp ~/nl/znode-backup-20180704/zen-a3y/nodeid ~/nl/znode-backup-20180704/zen-a3y/stakeaddr zen@zen-a4y:secnodetracker/config/
+#scp ~/nl/znode-backup-20180704/zen-a3z/nodeid ~/nl/znode-backup-20180704/zen-a3z/stakeaddr zen@zen-a4z:secnodetracker/config/
+
+#scp ~/nl/znode-backup-20180704/zen-a2b/wallet.dat zen@zen-a5e:.zen/
+#scp ~/nl/znode-backup-20180704/zen-a2c/wallet.dat zen@zen-a5f:.zen/
+#scp ~/nl/znode-backup-20180704/zen-a2d/wallet.dat zen@zen-a5g:.zen/
+#scp ~/nl/znode-backup-20180704/zen-a2e/wallet.dat zen@zen-a5h:.zen/
+#scp ~/nl/znode-backup-20180704/zen-a3s/wallet.dat zen@zen-a4i:.zen/
+#scp ~/nl/znode-backup-20180704/zen-a3t/wallet.dat zen@zen-a4j:.zen/
+#scp ~/nl/znode-backup-20180704/zen-a3u/wallet.dat zen@zen-a4l:.zen/
+#scp ~/nl/znode-backup-20180704/zen-a3v/wallet.dat zen@zen-a4m:.zen/
+#scp ~/nl/znode-backup-20180704/zen-a3w/wallet.dat zen@zen-a4n:.zen/
+#scp ~/nl/znode-backup-20180704/zen-a3x/wallet.dat zen@zen-a4o:.zen/
+#scp ~/nl/znode-backup-20180704/zen-a3y/wallet.dat zen@zen-a4y:.zen/
+#scp ~/nl/znode-backup-20180704/zen-a3z/wallet.dat zen@zen-a4z:.zen/
+
+#
+#
+#ssh zen@zen-b01 sendchal
+#sleep 100
+#ssh zen@zen-b2k sendchal
+#sleep 100
+#ssh zen@zen-b0j sendchal
+#sleep 100
+#ssh zen@zen-b08 sendchal
+#sleep 100
+#ssh zen@zen-b2l sendchal
+#sleep 100
+#ssh zen@zen-b2i sendchal
+#sleep 100
+#ssh zen@zen-b2o sendchal
+#sleep 100
+#ssh zen@zen-a3g sendchal
+#sleep 100
+#ssh zen@zen-b2p sendchal
+#sleep 100
+#ssh zen@zen-b2j sendchal
+#sleep 100
+#ssh zen@zen-b09 sendchal
+#sleep 100
+#ssh zen@zen-a3j sendchal
+#sleep 100
+#ssh zen@zen-a3h sendchal
+#
+#
+
+#nodes="zen-a3o	zen-a3p	zen-a5l	zen-a5m	zen-a5n	zen-b1o	zen-b1p	zen-b1q	zen-b1r	zen-a2b	zen-b2g	zen-b2h	zen-b2i	zen-b2j	zen-b1s	zen-b1t	zen-b1u	zen-b1v	zen-b1w	zen-b1x	zen-b1y	zen-b1z"
+#echo -n admin@example.com > kik/email
+#for node in $nodes; do
+##  mkdir -p kik/$node
+## scp kik/$node/* zen@$node:secnodetracker/config/
+# scp kik/email zen@$node:secnodetracker/config/
+# ssh zen@$node pm2 restart 0
+#done
+
+#echo -n znaMZtvdmzE7GujacS78wS16ZrtatYhvN9B	> kik/zen-a5l/stakeaddr
+#echo -n 75744 > kik/zen-a5l/nodeid
+#echo -n znaVnAuf1PgCVcQ3cpwfqYeKeiNmqsU8AvR	> kik/zen-a5m/stakeaddr
+#echo -n 78021 > kik/zen-a5m/nodeid
+#echo -n znbrUrcKfsv6szLTgTTdHH4KVrodyuTkfvw	> kik/zen-a5n/stakeaddr
+#echo -n 77850 > kik/zen-a5n/nodeid
+#
+#nodes="zen-a5l zen-a5m zen-a5n"
+#for node in $nodes; do
+# mkdir -p kik/$node
+# scp kik/$node/* zen@$node:secnodetracker/config/
+## scp kik/email zen@$node:secnodetracker/config/
+# ssh zen@$node pm2 restart 0
+#done
+#
+#
+#
+#
+#
+#from_addr=$(zen-cli listaddressgroupings | jq -r '[.[][] | {address:.[0],balance:.[1]}] | sort_by(.balance) | reverse | .[0].address')
+#
+#idx=0
+#addrs=$(cat chrisd/zaddrs)
+#for addr in $addrs; do
+#  addr_bal="{\"address\": \"$addr\", \"balance\": 0.0}"
+#  bals=$(echo "$bals [$addr_bal]" | jq -s add)
+#
+#  let "idx++"
+#  if (( idx % 16 == 0 )); then
+##    echo $idx
+##    echo "$bals" | jq '.'
+#
+#    dests=$(echo $bals | jq '[ .[] | {address:.address,amount:0.01} ]')
+##        if [ "$(echo $dests | jq -r '. | length')" != "0" ]; then
+#    echo Executing zen-cli z_sendmany $from_addr "$dests"
+#    zen-cli z_sendmany $from_addr "$dests"
+##        fi
+#    bals=""
+#  fi
+#
+#done
+
+#jq --argjson bals "$bals" '$bals'
+
+#let "idx++"
+#   ssh zen@$node zen-cli z_getnewaddress
+#sends="[]"
+#sends=$(jq -n --arg addr "$addr" --argjson sends "$sends" '[$sends[],{address:$addr,amount:0.01}]')
+#addr_bal="{\"address\": \"$addr\", \"balance\": 0.0}"
+#dests=$(echo $bals | jq --arg tgt $tgt '[ .[] | select(.balance | tonumber < ($tgt | tonumber)) | {address:.address,amount:0.01} ]')
+#bals=$(echo "$dests [{address:.address,amount:0.01}]" | jq -s add)
+#echo $idx
+#if (( idx % 16 == 0 )); then
+#  echo $sends
+#  echo boom
+#fi
+#done
+
+
+#nodes=$(cat cdl)
+#for node in $nodes; do
+#   ssh zen@$node zen-cli z_getnewaddress
+#done
+#
+#    bals=$(echo "$bals [$addr_bal]" | jq -s add)
+#  done
+#done
+#
+##echo $bals
+##echo ""
+#
+#for tgt in 0.001 0.011; do
+#  dests=$(echo $bals | jq --arg tgt $tgt '[ .[] | select(.balance | tonumber < ($tgt | tonumber)) | {address:.address,amount:0.01} ]')
+#  if [ "$(echo $dests | jq -r '. | length')" != "0" ]; then
+#    echo Executing zen-cli z_sendmany $from_addr "$dests"
+#    zen-cli z_sendmany $from_addr "$dests"
+#  fi
+#done
+
+

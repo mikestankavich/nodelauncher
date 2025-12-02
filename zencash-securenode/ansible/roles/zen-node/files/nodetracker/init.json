@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "secure": "https://securenodes.zensystem.io/api/srvlist",
+    "super": "https://supernodes.zensystem.io/api/srvlist",
+    "testnet": "https://securenodes.testnet.zensystem.io/api/srvlist"
+  },
+  "domain": "zensystem.io",
+  "protocol": "https"
+}

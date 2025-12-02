@@ -1,0 +1,4 @@
+---
+cert_fqdn: "{{ ansible_hostname }}.nodelauncher.com"
+
+intermediate_cert_file: alphassl_intermediate.crt

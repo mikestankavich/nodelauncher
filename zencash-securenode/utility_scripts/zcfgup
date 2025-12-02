@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+cfgdir=/home/zen/secnodetracker/config
+email=$(cat $cfgdir/email)
+region=$(cat $cfgdir/region)
+nodeid=$(cat $cfgdir/nodeid)
+stakeaddr=$(cat $cfgdir/stakeaddr)
+nodetype=secure
+
+api_server="https://securenodes.zensystem.io/api/srvlist"
+servers=$(curl -sL $api_server | jq '.servers')
+home=$(jq -n -r --arg rgn "$region" --argjson srvs "$servers" '[$srvs[] | select(endswith($rgn))] | first')
+
+# config=$(jq -n --arg srvs "$servers" '{active:"secure",secure:{}}')
+jq -n --arg email "$email" --arg hme "$home" --arg rgn "$region" --arg nid "$nodeid"  \
+            --arg stk "$stakeaddr" --arg fqdn "$(hostname -f)" --argjson srvs "$servers" \
+'{active:"secure", '\
+' secure:{nodetype:"secure", '\
+' servers:$srvs,  '\
+' email:$email, '\
+' fqdn:$fqdn, '\
+' ipv:4, '\
+' home:$hme, '\
+' region:$rgn} }' > secnodetracker/config/config.json

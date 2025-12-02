@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+from_addr=$(zu zen-cli listaddressgroupings | jq -r '[.[][] | {address:.[0],balance:.[1]}] | sort_by(.balance) | reverse | .[0].address')
+echo $from_addr
+for parm in $@; do
+  if [[ $parm =~ '@' ]]; then
+    node=$parm
+  else
+    node="zen@$parm"
+  fi
+  # get balances from node
+  node_bals=$(ssh -o StrictHostKeyChecking=accept-new $node "zbals")
+  addr_count=$(echo $node_bals | jq -r '. | length')
+  echo $node_bals
+  for idx in 0 ; do
+    if  (( idx >= addr_count)); then
+      addr_bal="{\"address\": \"$(ssh $node zen-cli z_getnewaddress)\", \"balance\": 0.0}"
+    else
+      addr_bal=$(echo "$node_bals" | jq --arg idx $idx '.[$idx | tonumber]  | select(.balance | tonumber < 0.015)')
+    fi
+    echo $parm: $addr_bal
+    bals=$(echo "$bals [$addr_bal]" | jq -s add)
+  done
+done
+
+#echo $bals
+#echo ""
+
+for tgt in 0.001 ; do
+  dests=$(echo $bals | jq --arg tgt $tgt '[ .[] | select(.balance | tonumber < ($tgt | tonumber)) | {address:.address,amount:0.01} ]')
+  if [ "$(echo $dests | jq -r '. | length')" != "0" ]; then
+    echo Executing zen-cli z_sendmany $from_addr "$dests"
+    zu zen-cli z_sendmany $from_addr "$dests"
+  fi
+done
+

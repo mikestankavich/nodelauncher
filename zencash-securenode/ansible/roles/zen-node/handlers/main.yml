@@ -1,0 +1,18 @@
+---
+
+- name: Restart zend service
+  listen: restart_zend
+  systemd:
+    enabled: yes
+    state: restarted
+    daemon_reload: yes
+    name: zend
+
+# may want to condition restart on whether or not there's a nodeid and stakeaddr?
+- name: Restart zentracker service
+  listen: restart_zentracker
+  systemd:
+    enabled: yes
+    # state: restarted
+    daemon_reload: yes
+    name: zentracker

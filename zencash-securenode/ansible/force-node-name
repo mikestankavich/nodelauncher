@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ ! "$1" ]; then
+  echo Error: node host name is a required parameter
+  exit 1
+fi
+
+node_host=$1.nodelauncher.com
+shift
+
+ansible-playbook -u nladmin -i zen-inv.yml -l $node_host "$@" force-node-name.yml

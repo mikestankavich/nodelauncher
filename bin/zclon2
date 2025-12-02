@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+# clone specified node from baseline node z10 
+
+host=$1
+src=$2
+tgt=$3
+
+src_name=$(lxc list -cn --format csv $host:$src)
+echo $src_name
+if [[ -z $src_name ]]; then
+  echo "invalid source: $src"
+  exit
+fi
+
+tgt_name=$(lxc list -cn --format csv $host:$tgt)
+if [[ ! -z $tgt_name ]]; then
+  echo "target $tgt exists, aborting"
+  exit
+fi
+
+echo copy base to target
+# get latest snapshot with base-isodate naming
+snap=$(lxc info "$host:$src" | grep -Po 'base-20\S+' | sort | tail -1)
+lxc copy "$host:$src/$snap" "$host:$tgt"
+tgt_name=$(lxc list -cn --format csv $host:$tgt)
+if [[ -z $tgt_name ]]; then
+  echo "destination doesnt exist, copy failed"
+  exit
+fi
+
+echo make a working directory
+workdir=$(mktemp -d)
+mkdir -p "$workdir"
+
+echo copy config files to working directory
+lxc file pull "$host:$tgt/etc/netplan/50-cloud-init.yaml" "$workdir/"
+lxc file pull "$host:$tgt/home/zen/.zen/zen.conf" "$workdir/"
+lxc file pull "$host:$tgt/home/zen/secnodetracker/config/config.json" "$workdir/"
+
+echo "get $tgt network config"
+lxc config get "$host:$tgt" user.network-config > "$workdir/user.network-config"
+
+echo get source ip and compute target IP
+src_ip6=$(lxc list -c6 --format csv $host:$src | cut -d' ' -f1)
+src_node_nbr=$(echo $src | tr -d z)
+tgt_node_nbr=$(echo $tgt | tr -d z)
+tgt_ip6=$(echo $src_ip6 | sed "s/::$src_node_nbr\$/::$tgt_node_nbr/")
+
+echo update ip address in config files
+sed -i "s/$src_ip6/$tgt_ip6/" "$workdir/50-cloud-init.yaml"
+sed -i "s/$src_ip6/$tgt_ip6/" "$workdir/user.network-config"
+sed -i "s/$src_ip6/$tgt_ip6/" "$workdir/zen.conf"
+jq 'del(.secure.stakeaddr,.secure.nodeid,.secure.category)' "$workdir/config.json" |
+  jq 'del(.super.stakeaddr,.super.nodeid,.super.category)' |
+  jq --arg fqdn "$host-$tgt.nodelauncher.com" '.secure.fqdn=$fqdn | .super.fqdn=$fqdn' |
+  sponge "$workdir/config.json"
+
+echo push config files
+lxc file push "$workdir/50-cloud-init.yaml" "$host:$tgt/etc/netplan/50-cloud-init.yaml"
+lxc file push "$workdir/zen.conf" "$host:$tgt/home/zen/.zen/"
+lxc file push "$workdir/config.json" "$host:$tgt/home/zen/secnodetracker/config/"
+
+echo update network addresses in user network config
+lxc config set "$host:$tgt" user.network-config "$(cat $workdir/user.network-config)"
+
+#echo assign network profile
+#lxc profile assign "$host:$tgt" "$profile_name"
+
+echo disable zen services
+lxc file delete "$host:$tgt/etc/systemd/system/multi-user.target.wants/zend.service"
+lxc file delete "$host:$tgt/etc/systemd/system/multi-user.target.wants/zentracker.service"
+
+echo delete wallet file
+lxc file delete "$host:$tgt/home/zen/.zen/wallet.dat"
+
+echo start target container
+lxc start "$host:$tgt"
+sleep 5
+lxc exec "$host:$tgt" -- /usr/bin/uptime
+lxc exec "$host:$tgt" -- chown zen:zen /home/zen/{.zen/zen.conf,secnodetracker/config/config.json}
+lxc exec "$host:$tgt" -- systemctl enable zend
+lxc exec "$host:$tgt" -- systemctl start zend
+
+ssh-keygen -f "/home/nladmin/.ssh/known_hosts" -R "$host-$tgt"
+ssh-keygen -f "/home/nladmin/.ssh/known_hosts" -R "$host-$tgt.nodelauncher.com"
+ssh-keygen -f "/home/nladmin/.ssh/known_hosts" -R "$(dig $host-$tgt.nodelauncher.com +short A)"
+ssh-keygen -f "/home/nladmin/.ssh/known_hosts" -R "$(dig $host-$tgt.nodelauncher.com +short AAAA)"

@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+if [ ! $1 ]; then
+  echo Must specify stake address
+  exit 1
+fi
+
+backup_suffix=$(date +%s)
+
+# stop tracker
+pm2 -s stop 0
+
+# back up config
+if [ -f ~/secnodetracker/config/stakeaddr ]; then
+   mv ~/secnodetracker/config/stakeaddr ~/secnodetracker/config/stakeaddr.$backup_suffix
+fi
+if [ -f ~/secnodetracker/config/nodeid ]; then
+  mv ~/secnodetracker/config/nodeid ~/secnodetracker/config/nodeid.$backup_suffix
+fi
+
+# push fqdn
+echo -n $(hostname -f) > ~/secnodetracker/config/fqdn
+
+# push stake address
+echo -n $1 > ~/secnodetracker/config/stakeaddr
+
+# start tracker
+pm2 -s start 0
+
+if [ $? -ne 0 ]; then
+  cd ~/secnodetracker
+  pm2 start app.js --name secnodetracker
+fi
+
+for delay in 1 2 3 4 5; do
+  if [ -f ~/secnodetracker/config/nodeid ]; then
+    break
+  fi
+  sleep 3
+done
+
+# report results
+tracker_host=securenodes$(cat ~/secnodetracker/config/home | sed s/^ts1/ts/ | sed s/^ts//).zensystem.io
+node_id=$(cat ~/secnodetracker/config/nodeid)
+
+hostname -f
+echo $node_id
+echo https://$tracker_host/nodes/$node_id/detail

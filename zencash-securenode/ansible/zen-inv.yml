@@ -1,0 +1,379 @@
+hetzner_lxd:
+  hosts:
+    hf1.jxp.io:
+      mac_address: a8:a1:59:0f:07:b2
+      ip_address: 95.217.198.62
+      ip_address6: 2a01:4f9:4a:5501::2
+      gateway6: fe80::1
+      nic_device: enp35s0
+      server_disk_devices:
+        - /dev/nvme0n1
+        - /dev/nvme1n1
+      swap_size: 96
+      node_ram: 2%
+      node_cpu: 2%
+      node_count: 80
+    hf2.nodelauncher.com:
+      ip_address: 135.181.217.181
+      ip_address6: 2a01:4f9:3a:3a0a::2
+      mac_address: b4:2e:99:cd:01:8c
+      gateway: 135.181.217.129
+      gateway6: fe80::1
+      nic_device: enp35s0
+      server_disk_devices:
+        - /dev/nvme0n1
+        - /dev/nvme1n1
+      swap_size: 80
+      node_ram: 2%
+      node_cpu: 2%
+      node_count: 64
+
+hf1_nodes:
+  vars:
+    tracker_region: eu
+  hosts:
+    hf1-z10.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::10
+    hf1-z11.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::11
+    hf1-z12.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::12
+    hf1-z13.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::13
+    hf1-z14.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::14
+    hf1-z15.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::15
+    hf1-z16.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::16
+    hf1-z17.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::17
+    hf1-z18.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::18
+    hf1-z19.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::19
+    hf1-z20.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::20
+    hf1-z21.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::21
+    hf1-z22.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::22
+    hf1-z23.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::23
+    hf1-z24.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::24
+    hf1-z25.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::25
+    hf1-z26.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::26
+    hf1-z27.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::27
+    hf1-z28.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::28
+    hf1-z29.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::29
+    hf1-z30.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::30
+    hf1-z31.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::31
+    hf1-z32.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::32
+    hf1-z33.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::33
+    hf1-z34.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::34
+    hf1-z35.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::35
+    hf1-z36.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::36
+    hf1-z37.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::37
+    hf1-z38.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::38
+    hf1-z39.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::39
+    hf1-z40.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::40
+    hf1-z41.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::41
+    hf1-z42.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::42
+    hf1-z43.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::43
+    hf1-z44.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::44
+    hf1-z45.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::45
+    hf1-z46.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::46
+    hf1-z47.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::47
+    hf1-z48.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::48
+    hf1-z49.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::49
+    hf1-z50.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::50
+    hf1-z51.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::51
+    hf1-z52.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::52
+    hf1-z53.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::53
+    hf1-z54.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::54
+    hf1-z55.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::55
+    hf1-z56.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::56
+    hf1-z57.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::57
+    hf1-z58.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::58
+    hf1-z59.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::59
+    hf1-z60.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::60
+    hf1-z61.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::61
+    hf1-z62.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::62
+    hf1-z63.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::63
+    hf1-z64.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::64
+    hf1-z65.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::65
+    hf1-z66.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::66
+    hf1-z67.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::67
+    hf1-z68.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::68
+    hf1-z69.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::69
+    hf1-z70.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::70
+    hf1-z71.nodelauncher.com:
+      ip_address6: 2a01:4f9:4a:5501::71
+#    hf1-z72.nodelauncher.com:
+#      ip_address6: 2a01:4f9:4a:5501::72
+#    hf1-z73.nodelauncher.com:
+#      ip_address6: 2a01:4f9:4a:5501::73
+#    hf1-z74.nodelauncher.com:
+#      ip_address6: 2a01:4f9:4a:5501::74
+#    hf1-z75.nodelauncher.com:
+#      ip_address6: 2a01:4f9:4a:5501::75
+#    hf1-z76.nodelauncher.com:
+#      ip_address6: 2a01:4f9:4a:5501::76
+#    hf1-z77.nodelauncher.com:
+#      ip_address6: 2a01:4f9:4a:5501::77
+#    hf1-z78.nodelauncher.com:
+#      ip_address6: 2a01:4f9:4a:5501::78
+#    hf1-z79.nodelauncher.com:
+#      ip_address6: 2a01:4f9:4a:5501::79
+    hf1-z194.nodelauncher.com:
+      ip_address: 135.181.10.194
+      ip_address6: 2a01:4f9:4a:5501:feed::194
+    hf1-z195.nodelauncher.com:
+      ip_address: 135.181.10.195
+      ip_address6: 2a01:4f9:4a:5501:feed::195
+    hf1-z196.nodelauncher.com:
+      ip_address: 135.181.10.196
+      ip_address6: 2a01:4f9:4a:5501:feed::196
+    hf1-z197.nodelauncher.com:
+      ip_address: 135.181.10.197
+      ip_address6: 2a01:4f9:4a:5501:feed::197
+    hf1-z198.nodelauncher.com:
+      ip_address: 135.181.10.198
+      ip_address6: 2a01:4f9:4a:5501:feed::198
+    hf1-z199.nodelauncher.com:
+      ip_address: 135.181.10.199
+      ip_address6: 2a01:4f9:4a:5501:feed::199
+#    hf1-z200.nodelauncher.com:
+#      ip_address: 135.181.10.200
+#      ip_address6: 2a01:4f9:4a:5501:feed::200
+#    hf1-z201.nodelauncher.com:
+#      ip_address: 135.181.10.201
+#      ip_address6: 2a01:4f9:4a:5501:feed::201
+#    hf1-z202.nodelauncher.com:
+#      ip_address: 135.181.10.202
+#      ip_address6: 2a01:4f9:4a:5501:feed::202
+#    hf1-z203.nodelauncher.com:
+#      ip_address: 135.181.10.203
+#      ip_address6: 2a01:4f9:4a:5501:feed::203
+#    hf1-z204.nodelauncher.com:
+#      ip_address: 135.181.10.204
+#      ip_address6: 2a01:4f9:4a:5501:feed::204
+#    hf1-z205.nodelauncher.com:
+#      ip_address: 135.181.10.205
+#      ip_address6: 2a01:4f9:4a:5501:feed::205
+    hf1-zctrl.nodelauncher.com:
+      ip_address: 135.181.10.206
+      ip_address6: 2a01:4f9:4a:5501:feed::206
+#    hf1-z210.nodelauncher.com:
+#      ip_address: 95.217.94.210
+#      ip_address6: 2a01:4f9:4a:5501:feee::210
+#    hf1-z211.nodelauncher.com:
+#      ip_address: 95.217.94.211
+#      ip_address6: 2a01:4f9:4a:5501:feee::211
+#    hf1-z212.nodelauncher.com:
+#      ip_address: 95.217.94.212
+#      ip_address6: 2a01:4f9:4a:5501:feee::212
+#    hf1-z213.nodelauncher.com:
+#      ip_address: 95.217.94.213
+#      ip_address: 2a01:4f9:4a:5501:feee::213
+#    hf1-z214.nodelauncher.com:
+#      ip_address: 95.217.94.214
+#      ip_address6: 2a01:4f9:4a:5501:feee::214
+
+hf2_nodes:
+  vars:
+    tracker_region: eu
+  hosts:
+    hf2-z10.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::10
+    hf2-z11.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::11
+    hf2-z12.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::12
+    hf2-z13.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::13
+    hf2-z14.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::14
+    hf2-z15.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::15
+    hf2-z16.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::16
+    hf2-z17.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::17
+    hf2-z18.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::18
+    hf2-z19.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::19
+    hf2-z20.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::20
+    hf2-z21.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::21
+    hf2-z22.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::22
+    hf2-z23.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::23
+    hf2-z24.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::24
+    hf2-z25.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::25
+    hf2-z26.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::26
+    hf2-z27.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::27
+    hf2-z28.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::28
+    hf2-z29.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::29
+    hf2-z30.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::30
+    hf2-z31.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::31
+    hf2-z32.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::32
+    hf2-z33.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::33
+    hf2-z34.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::34
+    hf2-z35.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::35
+    hf2-z36.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::36
+    hf2-z37.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::37
+    hf2-z38.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::38
+    hf2-z39.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::39
+    hf2-z40.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::40
+    hf2-z41.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::41
+    hf2-z42.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::42
+    hf2-z43.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::43
+    hf2-z44.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::44
+    hf2-z45.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::45
+    hf2-z46.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::46
+    hf2-z47.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::47
+    hf2-z48.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::48
+    hf2-z49.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::49
+    hf2-z50.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::50
+    hf2-z51.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::51
+    hf2-z52.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::52
+    hf2-z53.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::53
+    hf2-z54.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::54
+    hf2-z55.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::55
+    hf2-z56.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::56
+    hf2-z57.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::57
+    hf2-z58.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::58
+    hf2-z59.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::59
+    hf2-z60.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::60
+    hf2-z61.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::61
+    hf2-z62.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::62
+    hf2-z63.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::63
+    hf2-z64.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::64
+    hf2-z65.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::65
+    hf2-z66.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::66
+    hf2-z67.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::67
+    hf2-z68.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::68
+    hf2-z69.nodelauncher.com:
+      ip_address6: 2a01:4f9:3a:3a0a:6::69
+#    hf2-z70.nodelauncher.com:
+#      ip_address6: 2a01:4f9:3a:3a0a:6::70
+#    hf2-z71.nodelauncher.com:
+#      ip_address6: 2a01:4f9:3a:3a0a:6::71
+#    hf2-z72.nodelauncher.com:
+#      ip_address6: 2a01:4f9:3a:3a0a:6::72
+#    hf2-z73.nodelauncher.com:
+#      ip_address6: 2a01:4f9:3a:3a0a:6::73
+
+lxd:
+  children:
+    hetzner_lxd:
+
+#zen_super:
+#  children:
+#    hf1_nodes:
+
+zen:
+  children:
+    hf1_nodes:
+#    hf2_nodes:
+
+#zen_all:
+#  children:
+#    zen_secure:
+#    zen_super:

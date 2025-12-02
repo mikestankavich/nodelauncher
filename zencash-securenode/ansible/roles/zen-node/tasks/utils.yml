@@ -1,0 +1,28 @@
+---
+
+
+- name: Install required packages
+  apt:
+    name:
+      - jq
+
+- name: Copy utility scripts to nodes
+  copy:
+    src: "{{ playbook_dir}}/../utility_scripts/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    owner: root
+    group: root
+    mode: 0755
+  tags: utils
+  with_items:
+#    - sendchal
+    - zbals
+#    - tbals
+    - zu
+#    - zcu
+#    - zcub
+#    - zmig
+#    - zmigu
+#    - znctl
+    - ztc
+#    - zclean

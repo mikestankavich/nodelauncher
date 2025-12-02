@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+
+    toaddr=$(zen-cli listaddressgroupings | jq -r '[.[][] | {address:.[0],balance:.[1]}] | sort_by(.balance) | reverse | .[0].address')
+
+    for parm in $@; do
+      echo $parm
+      if [[ $parm =~ '@' ]]; then
+        node=$parm
+      else
+        node="zen@$parm"
+      fi
+      # get balances from node
+      node_bals=$(ssh -o StrictHostKeyChecking=accept-new $node "zbals" | jq -cr '.[]')
+
+      for addr_bal in $node_bals; do
+        addr=$(jq -r -n --argjson j "$addr_bal" '$j.address')
+        bal=$(jq -r -n --argjson j "$addr_bal" '$j.balance')
+        amt=$(python -c "print($bal-0.0001 if $bal > 0.0001 else '')")
+    #    amt=$(python -c "print($bal-0.01 if $bal > 0.011 else '')")
+        if [ -n "$amt" ]; then
+    #      read -p "Send $amt ZEN from $addr to $toaddr? (y/n) " -n 1 -r
+          echo "Sending $amt ZEN from $addr to $toaddr"
+          echo    # (optional) move to a new line
+    #      if [[ $REPLY =~ ^[Yy]$ ]]; then
+            ssh $node zen-cli z_sendmany $addr "'"'[{"address": "'"$toaddr"'", "amount":'"$amt"'}]'"'"
+    #      fi
+        fi
+      done
+
+    done

@@ -1,0 +1,13 @@
+---
+
+- name: Install required packages
+  apt:
+    name:
+    - netdata
+
+- name: firewall allow netdata
+  ufw:
+    rule: allow
+    port: 19999
+    proto: tcp
+

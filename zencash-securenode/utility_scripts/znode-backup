@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+backup_dir=~/znode-backup-$(date -I)
+#backup_files=.zen/wallet.dat,secnodetracker/config/config.json,secnodetracker/config/stakeaddr,secnodetracker/config/nodeid
+backup_files=.zen/wallet.dat,secnodetracker/config/config.json
+
+#REMOTE_CMDS="$(<./zcub)"
+#echo "$REMOTE_CMDS"
+
+if [ -z $1 ]; then
+  remotes=$(lxc remote list | grep -o "s[bgr][012][0-9] ")
+else
+  remotes=$@
+fi
+
+for remote in $remotes; do
+  for node in $(lxc list --columns ns --format csv $remote: | grep RUNNING | grep -o -E '^\w+-\w+'); do
+    if [[ $node =~ $remote-z[012] ]]; then
+      echo Backing up $remote:$node to $backup_dir/$node ...
+      mkdir -p $backup_dir/$node
+      scp -o StrictHostKeyChecking=accept-new -T zen@$node:{$backup_files} $backup_dir/$node/
+    fi
+  done
+done

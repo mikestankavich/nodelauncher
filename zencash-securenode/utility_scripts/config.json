@@ -1,0 +1,24 @@
+{
+ "active": "secure",
+ "secure": {
+  "nodetype": "secure",
+  "nodeid": 119343,
+  "servers": [
+   "ts2.na",
+   "ts1.na",
+   "ts3.na",
+   "ts4.na",
+   "ts1.eu",
+   "ts2.eu",
+   "ts3.eu",
+   "ts4.eu"
+  ],
+  "stakeaddr": "znXJVW3jm52frUrBHxBXdEqvgRfp7m8JZSo",
+  "email": "admin@example.com",
+  "fqdn": "b09b.nodelauncher.com",
+  "ipv": "4",
+  "region": "na",
+  "home": "ts2.na",
+  "category": "none"
+ }
+}

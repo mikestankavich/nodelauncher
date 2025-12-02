@@ -1,0 +1,20 @@
+---
+
+supported_os_families:
+  - Linux
+
+supported_distributions:
+  - Ubuntu
+
+supported_distribution_releases:
+  - artful
+
+lxd_init_network_address: '[::]'
+lxd_init_storage_backend: zfs
+# lxd_init_storage_create_loop: -- overriden if needed
+lxd_init_storage_pool: lxd-pool
+#enable_macvlan_bridge: true
+
+# moved to group_vars/all/lxd.yml
+# lxd_init_trust_password: xxxx
+# lxd_init_network_port: 8443

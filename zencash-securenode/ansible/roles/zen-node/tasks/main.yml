@@ -1,0 +1,77 @@
+---
+# based on https://documentation.zencash.com/display/ZEN/Installation
+
+- name: Check for supported operating system
+  fail:
+    msg: "{{ ansible_distribution }} is not currently supported by this role."
+  when:
+    - ansible_distribution not in ['Ubuntu']
+    - ansible_os_family != 'Windows'
+
+- name: Check for supported operating system release
+  fail:
+    msg: "{{ ansible_distribution }} {{ ansible_distribution_release }} is not currently supported by this role."
+  when:
+    - ansible_distribution_release not in ['artful', 'bionic']
+
+# todo: check for enough ram & disk
+
+# todo: find a way to do this in cloudinit. manage_etc_hosts maybe?
+# todo: what's right way on this? it's killing IPv6
+#- name: Add hostname and fqdn to /etc/hosts
+#  lineinfile:
+#    dest: /etc/hosts
+#    regexp: "^([0-9.]+)\\s+{{ ansible_hostname }}"
+#    line: "{{ ansible_default_ipv4.address }}  {{ ansible_hostname }}.nodelauncher.com  {{ ansible_hostname }}"
+#  tags: zen_node,hosts,update_fqdn
+
+## todo: detect if in container and container host configured swap
+#- import_tasks: swap.yml
+#  when: swap_size != "0" and false
+#  tags: zen_node,swap
+
+- name: Create unprivileged user to run zend
+  user:
+    name: "{{ zen_daemon_user }}"
+    shell: /bin/bash
+
+- name: Add users to systemd-journal group
+  command: "usermod -aG systemd-journal {{ item }}"
+  with_items:
+    - nladmin
+    - "{{ zen_daemon_user }}"
+
+# todo: move this to cloud-init
+- name: Copy ssh keys to nladmin
+  copy:
+    src: "~/.ssh/nladmin_{{ item[0] }}"
+    dest: "{{ item[1] }}/.ssh/{{ item[0] }}"
+    owner: nladmin
+    group: nladmin
+    mode: 0600
+  with_nested:
+    - ['id_rsa', 'id_rsa.pub']
+    - ['/home/nladmin', '/root']
+  tags: seed,chain
+
+- import_tasks: pkgs.yml
+  tags: zen_node,pkgs
+
+- import_tasks: utils.yml
+  tags: zen_node,utils
+
+- import_tasks: zend.yml
+  tags: zen_node,zend
+
+- import_tasks: tracker.yml
+  tags: zen_node,tracker
+
+- import_tasks: upgrade-tracker.yml
+  tags: upgrade_tracker
+
+- name: Check if reboot required
+  stat:
+    path: /var/run/reboot-required
+  register: check_reboot
+  changed_when: check_reboot.stat.exists
+  notify: request_reboot
