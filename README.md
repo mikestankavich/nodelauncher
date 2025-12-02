@@ -32,7 +32,7 @@ These weren't textbook choices—they were driven by unit economics at $10-12/no
 
 | Phase | Nodes | Revenue | Unit Cost | Notes |
 |-------|-------|---------|-----------|-------|
-| Early | ~50 | ~$500/mo | $10-12/node | 50%+ margins |
+| Early | ~50 | ~$500/mo | $5-6/node | Charging $10-12/node, 50%+ margins |
 | Peak | ~200 | ~$2K/mo | $4-5/node | IPv4 on OVH servers |
 | Final | 50-60 | ~$200/mo | ~$1.60/node | IPv6-only on Hetzner AX61. Competition drove prices to $2-3/node. |
 
